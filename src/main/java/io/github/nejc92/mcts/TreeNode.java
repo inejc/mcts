@@ -30,12 +30,12 @@ public class TreeNode<T extends DomainState> {
         return domainState.isTerminal();
     }
 
-    public<S extends DomainAction> ArrayList<S> getUntriedActionsForRepresentedState(){
+    public<S> ArrayList<S> getUntriedActionsForRepresentedState(){
         return domainState.getAvailableActionsForCurrentPlayer();
     }
 
     public boolean isFullyExpanded() {
-        return true;
+        return domainState.getNumberOfAvailableActionsForCurrentPlayer() == children.size();
     }
 
     public void updateAfterSimulation(){
