@@ -2,16 +2,16 @@ package io.github.nejc92.mcts;
 
 import java.util.List;
 
-public interface MctsDomainState<T> {
+public interface MctsDomainState<DomainActionT> {
     MctsDomainState duplicate();
 
     boolean isTerminal();
 
     double getRewardForTerminalState();
 
-    List<T> getAvailableActionsForCurrentPlayer();
+    List<DomainActionT> getAvailableActionsForCurrentPlayer();
 
     int getNumberOfAvailableActionsForCurrentPlayer();
 
-    MctsDomainState performActionForCurrentPlayer(T action);
+    MctsDomainState performActionForCurrentPlayer(DomainActionT action);
 }

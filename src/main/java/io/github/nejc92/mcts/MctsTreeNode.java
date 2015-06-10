@@ -3,15 +3,15 @@ package io.github.nejc92.mcts;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MctsTreeNode<T, S extends MctsDomainState<T>> {
-    private MctsTreeNode<T, S> parent;
-    private List<MctsTreeNode<T, S>> children;
-    private S domainState;
-    private T incomingAction;
+public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, DomainActionT> {
+    private MctsTreeNode<DomainStateT, DomainActionT> parent;
+    private List<MctsTreeNode<DomainStateT, DomainActionT>> children;
+    private DomainStateT domainState;
+    private DomainActionT incomingAction;
     private int numberOfVisits;
     private double totalReward;
 
-    public MctsTreeNode(S domainState) {
+    public MctsTreeNode(DomainStateT domainState) {
         this.parent = null;
         this.children = new ArrayList<>();
         this.domainState = domainState;
@@ -27,11 +27,11 @@ public class MctsTreeNode<T, S extends MctsDomainState<T>> {
         return domainState.isTerminal();
     }
 
-    public List<T> getUntriedActionsForRepresentedState(){
+    public List<DomainActionT> getUntriedActionsForRepresentedState(){
         return domainState.getAvailableActionsForCurrentPlayer();
     }
 
-    public T getStatesIncomingAction(){
+    public DomainActionT getStatesIncomingAction(){
         return incomingAction;
     }
 
