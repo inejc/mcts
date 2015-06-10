@@ -1,12 +1,12 @@
 package io.github.nejc92.mcts;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public abstract class DomainState {
-    public abstract DomainState clone();
-    public abstract boolean isTerminal();
-    public abstract double getReward();
-    public abstract<T> ArrayList<T> getAvailableActionsForCurrentPlayer();
-    public abstract int getNumberOfAvailableActionsForCurrentPlayer();
-    public abstract<T> DomainState performActionForCurrentPlayer(T action);
+public interface DomainState<T> {
+    DomainState duplicate();
+    boolean isTerminal();
+    double getRewardForTerminalState();
+    List<T> getAvailableActionsForCurrentPlayer();
+    int getNumberOfAvailableActionsForCurrentPlayer();
+    DomainState performActionForCurrentPlayer(T action);
 }

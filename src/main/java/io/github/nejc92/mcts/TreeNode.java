@@ -3,18 +3,15 @@ package io.github.nejc92.mcts;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TreeNode<T extends DomainState> {
-    private TreeNode<T> parent;
-    private List<TreeNode<T>> children;
-    private T domainState;
+public class TreeNode<T, S extends DomainState<T>> {
+    private TreeNode<T, S> parent;
+    private List<TreeNode<T, S>> children;
+    private S domainState;
+    private T incomingAction;
     private int numberOfVisits;
     private double totalReward;
 
-    public static<T extends DomainState> TreeNode<T> createRootNode(T domainState) {
-        return new TreeNode<> (domainState);
-    }
-
-    private TreeNode(T domainState) {
+    public TreeNode(S domainState) {
         this.parent = null;
         this.children = new ArrayList<>();
         this.domainState = domainState;
@@ -30,8 +27,12 @@ public class TreeNode<T extends DomainState> {
         return domainState.isTerminal();
     }
 
-    public<S> ArrayList<S> getUntriedActionsForRepresentedState(){
+    public List<T> getUntriedActionsForRepresentedState(){
         return domainState.getAvailableActionsForCurrentPlayer();
+    }
+
+    public T getStatesIncomingAction(){
+        return incomingAction;
     }
 
     public boolean isFullyExpanded() {
@@ -40,6 +41,6 @@ public class TreeNode<T extends DomainState> {
 
     public void updateAfterSimulation(){
         numberOfVisits += 1;
-        totalReward += domainState.getReward();
+        totalReward += domainState.getRewardForTerminalState();
     }
 }
