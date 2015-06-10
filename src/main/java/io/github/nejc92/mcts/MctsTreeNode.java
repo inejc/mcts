@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, DomainActionT> {
+
     private MctsTreeNode<DomainStateT, DomainActionT> parent;
     private List<MctsTreeNode<DomainStateT, DomainActionT>> children;
     private DomainStateT domainState;
