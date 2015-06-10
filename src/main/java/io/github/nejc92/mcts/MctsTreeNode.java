@@ -3,15 +3,15 @@ package io.github.nejc92.mcts;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TreeNode<T, S extends DomainState<T>> {
-    private TreeNode<T, S> parent;
-    private List<TreeNode<T, S>> children;
+public class MctsTreeNode<T, S extends MctsDomainState<T>> {
+    private MctsTreeNode<T, S> parent;
+    private List<MctsTreeNode<T, S>> children;
     private S domainState;
     private T incomingAction;
     private int numberOfVisits;
     private double totalReward;
 
-    public TreeNode(S domainState) {
+    public MctsTreeNode(S domainState) {
         this.parent = null;
         this.children = new ArrayList<>();
         this.domainState = domainState;
@@ -19,7 +19,7 @@ public class TreeNode<T, S extends DomainState<T>> {
         this.totalReward = 0.0;
     }
 
-    public TreeNode expand(){
+    public MctsTreeNode expand(){
         return parent;
     }
 
