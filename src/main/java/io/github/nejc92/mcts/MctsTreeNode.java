@@ -12,15 +12,16 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     private int numberOfVisits;
     private double totalReward;
 
+    //root node
     public MctsTreeNode(DomainStateT domainState) {
-        this.parent = null;
         this.children = new ArrayList<>();
         this.domainState = domainState;
         this.numberOfVisits = 0;
         this.totalReward = 0.0;
     }
 
-    public MctsTreeNode expand(){
+    public MctsTreeNode<DomainStateT, DomainActionT> addNewChild(){
+        //DomainStateT newState = domainState.getDeepClone();
         return parent;
     }
 
@@ -29,7 +30,11 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public List<DomainActionT> getUntriedActionsForRepresentedState(){
-        return domainState.getAvailableActionsForCurrentPlayer();
+        List<DomainActionT> untriedActions = domainState.getAvailableActionsForCurrentPlayer();
+        for(MctsTreeNode<DomainStateT, DomainActionT> child : children) {
+            untriedActions.remove(child.getStatesIncomingAction());
+        }
+        return untriedActions;
     }
 
     public DomainActionT getStatesIncomingAction(){

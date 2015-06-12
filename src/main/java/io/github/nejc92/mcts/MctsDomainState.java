@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface MctsDomainState<DomainActionT> {
 
-    MctsDomainState duplicate();
+    //MctsDomainState getDeepClone();
     boolean isTerminal();
     double getRewardForTerminalState();
     List<DomainActionT> getAvailableActionsForCurrentPlayer();
