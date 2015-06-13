@@ -84,7 +84,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
 
     private MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromUntriedAction(DomainActionT untriedAction){
         DomainStateT newState = getNewStateFromAction(untriedAction);
-        return createNewChild(newState, untriedAction);
+        return createNewChildInstance(newState, untriedAction);
     }
 
     private DomainStateT getNewStateFromAction(DomainActionT action){
@@ -97,7 +97,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
         return cloner.deepClone(representedState);
     }
 
-    private MctsTreeNode<DomainStateT, DomainActionT> createNewChild(DomainStateT representedState,
+    private MctsTreeNode<DomainStateT, DomainActionT> createNewChildInstance(DomainStateT representedState,
                                                                      DomainActionT incomingAction) {
         MctsTreeNode<DomainStateT, DomainActionT> child = new MctsTreeNode<>(representedState, this, incomingAction, cloner);
         children.add(child);

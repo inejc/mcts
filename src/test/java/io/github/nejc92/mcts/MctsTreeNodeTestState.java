@@ -2,11 +2,11 @@ package io.github.nejc92.mcts;
 
 import java.util.List;
 
-public class MctsTreeNodeTestState implements MctsDomainState<MctsTreeNodeTestAction> {
+public class MctsTreeNodeTestState implements MctsDomainState<String> {
 
-    private List<MctsTreeNodeTestAction> availableActions;
+    private List<String> availableActions;
 
-    public MctsTreeNodeTestState(List<MctsTreeNodeTestAction> availableActions) {
+    public MctsTreeNodeTestState(List<String> availableActions) {
         this.availableActions = availableActions;
     }
 
@@ -21,7 +21,7 @@ public class MctsTreeNodeTestState implements MctsDomainState<MctsTreeNodeTestAc
     }
 
     @Override
-    public List<MctsTreeNodeTestAction> getAvailableActionsForCurrentPlayer() {
+    public List<String> getAvailableActionsForCurrentPlayer() {
         return availableActions;
     }
 
@@ -31,7 +31,7 @@ public class MctsTreeNodeTestState implements MctsDomainState<MctsTreeNodeTestAc
     }
 
     @Override
-    public MctsDomainState performActionForCurrentPlayer(MctsTreeNodeTestAction action) {
+    public MctsDomainState performActionForCurrentPlayer(String action) {
         return this;
     }
 }

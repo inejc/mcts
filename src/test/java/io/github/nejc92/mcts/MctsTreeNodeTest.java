@@ -9,19 +9,19 @@ import static org.junit.Assert.*;
 
 public class MctsTreeNodeTest {
 
-    private List<MctsTreeNodeTestAction> allPossibleActions;
-    private List<MctsTreeNodeTestAction> availableActions;
-    private MctsTreeNode<MctsTreeNodeTestState, MctsTreeNodeTestAction> node;
+    private List<String> allPossibleActions;
+    private List<String> availableActions;
+    private MctsTreeNode<MctsTreeNodeTestState, String> node;
     private MctsTreeNodeTestState state;
     private Cloner cloner = new Cloner();
 
     @Before
     public void setUp() {
         allPossibleActions = new ArrayList<>();
-        allPossibleActions.add(new MctsTreeNodeTestAction());
-        allPossibleActions.add(new MctsTreeNodeTestAction());
-        allPossibleActions.add(new MctsTreeNodeTestAction());
-        availableActions = allPossibleActions.subList(0, 3);
+        allPossibleActions.add("action0");
+        allPossibleActions.add("action1");
+        allPossibleActions.add("action2");
+        availableActions = allPossibleActions.subList(0, 2);
         state = new MctsTreeNodeTestState(availableActions);
         node = new MctsTreeNode<>(state, cloner);
     }
@@ -41,12 +41,21 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testAddNewChildFromValidAction() {
-        List<MctsTreeNodeTestAction> availableActions = node.getUntriedActionsForRepresentedStatesCurrentPlayer();
-        node.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
+        assertEquals(availableActions.get(0), child.getIncomingAction());
+        assertEquals(node, child.getParent());
+        availableActions.remove(0);
+        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
     }
 
     @Test(expected= IllegalArgumentException.class)
     public void testAddNewChildFromInvalidAction() {
+        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(allPossibleActions.get(2));
+    }
 
+    @Test(expected= IllegalArgumentException.class)
+    public void testAddNewChildFromTriedAction() {
+        MctsTreeNode<MctsTreeNodeTestState, String> child0 = node.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<MctsTreeNodeTestState, String> child1 = node.addNewChildFromAction(availableActions.get(0));
     }
 }
