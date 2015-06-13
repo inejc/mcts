@@ -96,7 +96,8 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
         return cloner.deepClone(representedState);
     }
 
-    private MctsTreeNode<DomainStateT, DomainActionT> createNewChild(DomainStateT representedState, DomainActionT incomingAction) {
+    private MctsTreeNode<DomainStateT, DomainActionT> createNewChild(DomainStateT representedState,
+                                                                     DomainActionT incomingAction) {
         MctsTreeNode<DomainStateT, DomainActionT> child = new MctsTreeNode<>(representedState, this, incomingAction);
         children.add(child);
         return child;
