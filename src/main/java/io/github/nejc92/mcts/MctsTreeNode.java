@@ -12,19 +12,21 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     private DomainStateT representedState;
     private int visitCount;
     private double totalReward;
+    private Cloner cloner;
 
-    public MctsTreeNode(DomainStateT representedState) {
-        this(representedState, null, null);
+    public MctsTreeNode(DomainStateT representedState, Cloner cloner) {
+        this(representedState, null, null, cloner);
     }
 
     private MctsTreeNode(DomainStateT representedState, MctsTreeNode<DomainStateT, DomainActionT> parent,
-                         DomainActionT incomingAction) {
+                         DomainActionT incomingAction, Cloner cloner) {
         this.parent = parent;
         this.incomingAction = incomingAction;
         this.children = new ArrayList<>();
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
+        this.cloner = cloner;
     }
 
     public MctsTreeNode<DomainStateT, DomainActionT> getParent() {
@@ -92,13 +94,12 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public DomainStateT deepCloneRepresentedState() {
-        Cloner cloner = new Cloner();
         return cloner.deepClone(representedState);
     }
 
     private MctsTreeNode<DomainStateT, DomainActionT> createNewChild(DomainStateT representedState,
                                                                      DomainActionT incomingAction) {
-        MctsTreeNode<DomainStateT, DomainActionT> child = new MctsTreeNode<>(representedState, this, incomingAction);
+        MctsTreeNode<DomainStateT, DomainActionT> child = new MctsTreeNode<>(representedState, this, incomingAction, cloner);
         children.add(child);
         return child;
     }
