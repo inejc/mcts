@@ -48,7 +48,7 @@ public class MctsTreeNodeTest {
     public void testAddNewChildFromValidAction() {
         MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
         assertEquals(availableActions.get(0), child.getIncomingAction());
-        assertEquals(node, child.getParent());
+        assertEquals(node, child.getParentNode());
     }
 
     @Test(expected= IllegalArgumentException.class)
@@ -63,13 +63,13 @@ public class MctsTreeNodeTest {
     }
 
     @Test
-    public void testGetUntriedActionsForRepresentedStatesCurrentPlayer() {
-        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+    public void testGetUntriedActionsForCurrentPlayer() {
+        assertEquals(availableActions, node.getUntriedActionsForCurrentPlayer());
         node.addNewChildFromAction(availableActions.get(0));
         availableActions.remove(0);
-        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+        assertEquals(availableActions, node.getUntriedActionsForCurrentPlayer());
         node.addNewChildFromAction(availableActions.get(0));
-        assertEquals(new ArrayList<String>(), node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+        assertEquals(new ArrayList<String>(), node.getUntriedActionsForCurrentPlayer());
     }
 
     @Test

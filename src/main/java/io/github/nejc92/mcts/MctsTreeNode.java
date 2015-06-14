@@ -7,9 +7,9 @@ import java.util.List;
 
 public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, DomainActionT> {
 
-    private MctsTreeNode<DomainStateT, DomainActionT> parent;
+    private MctsTreeNode<DomainStateT, DomainActionT> parentNode;
     private DomainActionT incomingAction;
-    private List<MctsTreeNode<DomainStateT, DomainActionT>> children;
+    private List<MctsTreeNode<DomainStateT, DomainActionT>> childrenNodes;
     private DomainStateT representedState;
     private int visitCount;
     private double totalReward;
@@ -19,19 +19,19 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
         this(representedState, null, null, cloner);
     }
 
-    private MctsTreeNode(DomainStateT representedState, MctsTreeNode<DomainStateT, DomainActionT> parent,
+    private MctsTreeNode(DomainStateT representedState, MctsTreeNode<DomainStateT, DomainActionT> parentNode,
                          DomainActionT incomingAction, Cloner cloner) {
-        this.parent = parent;
+        this.parentNode = parentNode;
         this.incomingAction = incomingAction;
-        this.children = new ArrayList<>();
+        this.childrenNodes = new ArrayList<>();
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
         this.cloner = cloner;
     }
 
-    public MctsTreeNode<DomainStateT, DomainActionT> getParent() {
-        return parent;
+    public MctsTreeNode<DomainStateT, DomainActionT> getParentNode() {
+        return parentNode;
     }
 
     public DomainActionT getIncomingAction() {
@@ -47,7 +47,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public boolean isRootNode() {
-        return parent == null;
+        return parentNode == null;
     }
 
     public boolean representsTerminalState() {
@@ -55,21 +55,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public boolean isFullyExpanded() {
-        return representedState.getNumberOfAvailableActionsForCurrentPlayer() == children.size();
-    }
-
-    public List<DomainActionT> getUntriedActionsForRepresentedStatesCurrentPlayer() {
-        List<DomainActionT> untriedActions = new ArrayList<>(representedState.getAvailableActionsForCurrentPlayer());
-        untriedActions.removeAll(getTriedActionsForCurrentPlayer());
-        return untriedActions;
-    }
-
-    private List<DomainActionT> getTriedActionsForCurrentPlayer() {
-        List<DomainActionT> triedActions = new ArrayList<>();
-        for(MctsTreeNode<DomainStateT, DomainActionT> child : children) {
-            triedActions.add(child.getIncomingAction());
-        }
-        return triedActions;
+        return representedState.getNumberOfAvailableActionsForCurrentPlayer() == childrenNodes.size();
     }
 
     public MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromAction(DomainActionT action) {
@@ -82,12 +68,26 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     private boolean isUntriedAction(DomainActionT action) {
-        return getUntriedActionsForRepresentedStatesCurrentPlayer().contains(action);
+        return getUntriedActionsForCurrentPlayer().contains(action);
     }
 
-    private MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromUntriedAction(DomainActionT untriedAction) {
-        DomainStateT newState = getNewStateFromAction(untriedAction);
-        return createNewChildInstance(newState, untriedAction);
+    public List<DomainActionT> getUntriedActionsForCurrentPlayer() {
+        List<DomainActionT> untriedActions = new ArrayList<>(representedState.getAvailableActionsForCurrentPlayer());
+        untriedActions.removeAll(getTriedActionsForCurrentPlayer());
+        return untriedActions;
+    }
+
+    private List<DomainActionT> getTriedActionsForCurrentPlayer() {
+        List<DomainActionT> triedActions = new ArrayList<>();
+        for(MctsTreeNode<DomainStateT, DomainActionT> childNode : childrenNodes) {
+            triedActions.add(childNode.getIncomingAction());
+        }
+        return triedActions;
+    }
+
+    private MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromUntriedAction(DomainActionT incomingAction) {
+        DomainStateT childNodeState = getNewStateFromAction(incomingAction);
+        return createNewChildInstance(childNodeState, incomingAction);
     }
 
     private DomainStateT getNewStateFromAction(DomainActionT action) {
@@ -101,10 +101,11 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     private MctsTreeNode<DomainStateT, DomainActionT> createNewChildInstance(DomainStateT representedState,
-                                                                     DomainActionT incomingAction) {
-        MctsTreeNode<DomainStateT, DomainActionT> child = new MctsTreeNode<>(representedState, this, incomingAction, cloner);
-        children.add(child);
-        return child;
+                                                                             DomainActionT incomingAction) {
+        MctsTreeNode<DomainStateT, DomainActionT> childNode = new MctsTreeNode<>(representedState,
+                                                                                this, incomingAction, cloner);
+        childrenNodes.add(childNode);
+        return childNode;
     }
 
     public void updateDomainTheoreticValue(double rewardAddend) {
