@@ -13,8 +13,8 @@ public class MctsTreeNodeTest {
 
     private List<String> allPossibleActions;
     private List<String> availableActions;
-    private MctsTreeNode<MctsTreeNodeTestState, String> node;
-    private MctsTreeNodeTestState state;
+    private MctsTreeNode<TestState, TestAgent, String> node;
+    private TestState state;
     private Cloner cloner = new Cloner();
 
     @Before
@@ -24,7 +24,7 @@ public class MctsTreeNodeTest {
         allPossibleActions.add("1");
         allPossibleActions.add("2");
         availableActions = allPossibleActions.subList(0, 2);
-        state = new MctsTreeNodeTestState(availableActions);
+        state = new TestState(availableActions);
         node = new MctsTreeNode<>(state, cloner);
     }
 
@@ -40,13 +40,13 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testDeepCloneRepresentedState() {
-        MctsTreeNodeTestState clone = node.deepCloneRepresentedState();
+        TestState clone = node.deepCloneRepresentedState();
         assertNotEquals(state, clone);
     }
 
     @Test
     public void testAddNewChildFromValidAction() {
-        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<TestState, TestAgent, String> child = node.addNewChildFromAction(availableActions.get(0));
         assertEquals(availableActions.get(0), child.getIncomingAction());
         assertEquals(node, child.getParentNode());
     }
@@ -84,7 +84,7 @@ public class MctsTreeNodeTest {
     @Test
     public void testIsRootNode() {
         assertTrue(node.isRootNode());
-        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<TestState, TestAgent, String> child = node.addNewChildFromAction(availableActions.get(0));
         assertFalse(child.isRootNode());
     }
 }
