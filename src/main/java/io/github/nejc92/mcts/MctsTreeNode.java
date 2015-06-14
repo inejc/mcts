@@ -103,7 +103,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     private MctsTreeNode<DomainStateT, DomainActionT> createNewChildInstance(DomainStateT representedState,
                                                                              DomainActionT incomingAction) {
         MctsTreeNode<DomainStateT, DomainActionT> childNode = new MctsTreeNode<>(representedState,
-                                                                                this, incomingAction, cloner);
+                                                                                 this, incomingAction, cloner);
         childrenNodes.add(childNode);
         return childNode;
     }
