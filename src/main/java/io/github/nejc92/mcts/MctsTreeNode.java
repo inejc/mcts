@@ -1,8 +1,9 @@
 package io.github.nejc92.mcts;
 
-import java.util.List;
-import java.util.ArrayList;
 import com.rits.cloning.Cloner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, DomainActionT> {
 
@@ -58,15 +59,17 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public List<DomainActionT> getUntriedActionsForRepresentedStatesCurrentPlayer() {
-        List<DomainActionT> availableActions = representedState.getAvailableActionsForCurrentPlayer();
-        return removeTriedActionsFromAvailableActions(availableActions);
+        List<DomainActionT> untriedActions = new ArrayList<>(representedState.getAvailableActionsForCurrentPlayer());
+        untriedActions.removeAll(getTriedActionsForCurrentPlayer());
+        return untriedActions;
     }
 
-    private List<DomainActionT> removeTriedActionsFromAvailableActions(List<DomainActionT> availableActions) {
+    private List<DomainActionT> getTriedActionsForCurrentPlayer() {
+        List<DomainActionT> triedActions = new ArrayList<>();
         for(MctsTreeNode<DomainStateT, DomainActionT> child : children) {
-            availableActions.remove(child.getIncomingAction());
+            triedActions.add(child.getIncomingAction());
         }
-        return availableActions;
+        return triedActions;
     }
 
     public MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromAction(DomainActionT action) {
@@ -82,12 +85,12 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
         return getUntriedActionsForRepresentedStatesCurrentPlayer().contains(action);
     }
 
-    private MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromUntriedAction(DomainActionT untriedAction){
+    private MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromUntriedAction(DomainActionT untriedAction) {
         DomainStateT newState = getNewStateFromAction(untriedAction);
         return createNewChildInstance(newState, untriedAction);
     }
 
-    private DomainStateT getNewStateFromAction(DomainActionT action){
+    private DomainStateT getNewStateFromAction(DomainActionT action) {
         DomainStateT representedStateClone = deepCloneRepresentedState();
         representedStateClone.performActionForCurrentPlayer(action);
         return representedStateClone;

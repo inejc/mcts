@@ -3,8 +3,10 @@ package io.github.nejc92.mcts;
 import com.rits.cloning.Cloner;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class MctsTreeNodeTest {
@@ -18,9 +20,9 @@ public class MctsTreeNodeTest {
     @Before
     public void setUp() {
         allPossibleActions = new ArrayList<>();
-        allPossibleActions.add("action0");
-        allPossibleActions.add("action1");
-        allPossibleActions.add("action2");
+        allPossibleActions.add("0");
+        allPossibleActions.add("1");
+        allPossibleActions.add("2");
         availableActions = allPossibleActions.subList(0, 2);
         state = new MctsTreeNodeTestState(availableActions);
         node = new MctsTreeNode<>(state, cloner);
@@ -29,8 +31,11 @@ public class MctsTreeNodeTest {
     @Test
     public void testUpdateDomainTheoreticValue() {
         node.updateDomainTheoreticValue(0.3);
-        assertEquals(0.3, node.getTotalReward(), 0.001);
+        assertEquals(0.3, node.getTotalReward(), 0);
         assertEquals(1, node.getVisitCount());
+        node.updateDomainTheoreticValue(0.2);
+        assertEquals(0.5, node.getTotalReward(), 0);
+        assertEquals(2, node.getVisitCount());
     }
 
     @Test
@@ -44,18 +49,42 @@ public class MctsTreeNodeTest {
         MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
         assertEquals(availableActions.get(0), child.getIncomingAction());
         assertEquals(node, child.getParent());
-        availableActions.remove(0);
-        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
     }
 
     @Test(expected= IllegalArgumentException.class)
     public void testAddNewChildFromInvalidAction() {
-        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(allPossibleActions.get(2));
+        node.addNewChildFromAction(allPossibleActions.get(2));
     }
 
     @Test(expected= IllegalArgumentException.class)
     public void testAddNewChildFromTriedAction() {
-        MctsTreeNode<MctsTreeNodeTestState, String> child0 = node.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<MctsTreeNodeTestState, String> child1 = node.addNewChildFromAction(availableActions.get(0));
+        node.addNewChildFromAction(availableActions.get(0));
+        node.addNewChildFromAction(availableActions.get(0));
+    }
+
+    @Test
+    public void testGetUntriedActionsForRepresentedStatesCurrentPlayer() {
+        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+        node.addNewChildFromAction(availableActions.get(0));
+        availableActions.remove(0);
+        assertEquals(availableActions, node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+        node.addNewChildFromAction(availableActions.get(0));
+        assertEquals(new ArrayList<String>(), node.getUntriedActionsForRepresentedStatesCurrentPlayer());
+    }
+
+    @Test
+    public void testIsFullyExpanded() {
+        assertFalse(node.isFullyExpanded());
+        node.addNewChildFromAction(availableActions.get(0));
+        assertFalse(node.isFullyExpanded());
+        node.addNewChildFromAction(availableActions.get(1));
+        assertTrue(node.isFullyExpanded());
+    }
+
+    @Test
+    public void testIsRootNode() {
+        assertTrue(node.isRootNode());
+        MctsTreeNode<MctsTreeNodeTestState, String> child = node.addNewChildFromAction(availableActions.get(0));
+        assertFalse(child.isRootNode());
     }
 }
