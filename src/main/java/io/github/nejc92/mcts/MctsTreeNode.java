@@ -9,7 +9,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
 
     private MctsTreeNode<DomainStateT, DomainActionT> parentNode;
     private DomainActionT incomingAction;
-    private List<MctsTreeNode<DomainStateT, DomainActionT>> childrenNodes;
+    private List<MctsTreeNode<DomainStateT, DomainActionT>> childNodes;
     private DomainStateT representedState;
     private int visitCount;
     private double totalReward;
@@ -23,7 +23,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
                          DomainActionT incomingAction, Cloner cloner) {
         this.parentNode = parentNode;
         this.incomingAction = incomingAction;
-        this.childrenNodes = new ArrayList<>();
+        this.childNodes = new ArrayList<>();
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
@@ -55,7 +55,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
     }
 
     public boolean isFullyExpanded() {
-        return representedState.getNumberOfAvailableActionsForCurrentPlayer() == childrenNodes.size();
+        return representedState.getNumberOfAvailableActionsForCurrentPlayer() == childNodes.size();
     }
 
     public MctsTreeNode<DomainStateT, DomainActionT> addNewChildFromAction(DomainActionT action) {
@@ -79,7 +79,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
 
     private List<DomainActionT> getTriedActionsForCurrentPlayer() {
         List<DomainActionT> triedActions = new ArrayList<>();
-        for(MctsTreeNode<DomainStateT, DomainActionT> childNode : childrenNodes) {
+        for(MctsTreeNode<DomainStateT, DomainActionT> childNode : childNodes) {
             triedActions.add(childNode.getIncomingAction());
         }
         return triedActions;
@@ -104,7 +104,7 @@ public class MctsTreeNode<DomainStateT extends MctsDomainState<DomainActionT>, D
                                                                              DomainActionT incomingAction) {
         MctsTreeNode<DomainStateT, DomainActionT> childNode = new MctsTreeNode<>(representedState,
                                                                                  this, incomingAction, cloner);
-        childrenNodes.add(childNode);
+        childNodes.add(childNode);
         return childNode;
     }
 
