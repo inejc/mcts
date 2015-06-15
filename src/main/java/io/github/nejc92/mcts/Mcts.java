@@ -12,14 +12,22 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
         cloner = new Cloner();
     }
 
-    public ActionT uctSearch(StateT state) {
-        MctsTreeNode<StateT, ActionT> rootNode = new MctsTreeNode<>(state, cloner);
-        for(int i=0; i<numberOfIterations; i++) {
-            MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
-            double simulationResult = selectedChildNode.deepCloneRepresentedState().performSimulationForCurrentAgent();
-            backPropagate(selectedChildNode, simulationResult);
+    public ActionT uctSearch(StateT state, double explorationParameter) {
+        MctsTreeNode<StateT, ActionT> rootNode = createRootNode(state);
+        for(int i = 0; i < numberOfIterations; i++) {
+            performOneMctsIteration(rootNode);
         }
         return null;
+    }
+
+    private MctsTreeNode<StateT, ActionT> createRootNode(StateT state) {
+        return new MctsTreeNode<>(state, cloner);
+    }
+
+    private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode) {
+        MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
+        double simulationResult = selectedChildNode.deepCloneRepresentedState().performSimulationForCurrentAgent();
+        backPropagate(selectedChildNode, simulationResult);
     }
 
     private MctsTreeNode<StateT, ActionT> treePolicy(MctsTreeNode<StateT, ActionT> rootNode) {

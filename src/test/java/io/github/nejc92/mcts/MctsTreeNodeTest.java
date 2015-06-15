@@ -28,15 +28,15 @@ public class MctsTreeNodeTest {
         node = new MctsTreeNode<>(state, cloner);
     }
 
-    @Test
-    public void testUpdateDomainTheoreticValue() {
-        node.updateDomainTheoreticValue(0.3);
-        assertEquals(0.3, node.getTotalReward(), 0);
-        assertEquals(1, node.getVisitCount());
-        node.updateDomainTheoreticValue(0.2);
-        assertEquals(0.5, node.getTotalReward(), 0);
-        assertEquals(2, node.getVisitCount());
-    }
+//    @Test
+//    public void testUpdateDomainTheoreticValue() {
+//        node.updateDomainTheoreticValue(0.3);
+//        assertEquals(0.3, node.getTotalReward(), 0);
+//        assertEquals(1, node.getVisitCount());
+//        node.updateDomainTheoreticValue(0.2);
+//        assertEquals(0.5, node.getTotalReward(), 0);
+//        assertEquals(2, node.getVisitCount());
+//    }
 
     @Test
     public void testDeepCloneRepresentedState() {
@@ -86,5 +86,15 @@ public class MctsTreeNodeTest {
         assertTrue(node.isRootNode());
         MctsTreeNode<TestState, String> child = node.addNewChildFromAction(availableActions.get(0));
         assertFalse(child.isRootNode());
+    }
+
+    @Test(expected= UnsupportedOperationException.class)
+    public void testGetParentNodeOnRoot() {
+        node.getParentNode();
+    }
+
+    @Test(expected= UnsupportedOperationException.class)
+    public void testGetIncomingActionOnRoot() {
+        node.getIncomingAction();
     }
 }

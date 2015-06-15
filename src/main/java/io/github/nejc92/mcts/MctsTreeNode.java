@@ -2,6 +2,7 @@ package io.github.nejc92.mcts;
 
 import com.rits.cloning.Cloner;
 
+import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,19 +32,21 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public MctsTreeNode<StateT, ActionT> getParentNode() {
-        return parentNode;
+        if(!isRootNode()) {
+            return parentNode;
+        }
+        else {
+            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
+        }
     }
 
     public ActionT getIncomingAction() {
-        return incomingAction;
-    }
-
-    public int getVisitCount() {
-        return visitCount;
-    }
-
-    public double getTotalReward() {
-        return totalReward;
+        if(!isRootNode()) {
+            return incomingAction;
+        }
+        else {
+            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
+        }
     }
 
     public boolean isRootNode() {
@@ -54,6 +57,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return representedState.isTerminal();
     }
 
+    // todo: no state's available actions? + exception messages + change to this.methodName() where necessary
     public boolean isFullyExpanded() {
         return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
     }
@@ -63,7 +67,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
             return addNewChildFromUntriedAction(action);
         }
         else {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Invalid action passed as function parameter");
         }
     }
 
@@ -109,5 +113,46 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     public void updateDomainTheoreticValue(double rewardAddend) {
         visitCount += 1;
         totalReward += rewardAddend;
+    }
+
+    public ActionT getMostPromisingAction() {
+        return calculateBestChildWithExplorationParameter(0).getIncomingAction();
+    }
+
+    public MctsTreeNode<StateT, ActionT> calculateBestChildWithExplorationParameter(double parameter) {
+        if (!isExpanded()) {
+            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
+        }
+        else if (this.hasUnvisitedChild()) {
+            throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
+        }
+        else {
+            return confidentlyCalculateBestChildWithExplorationParameter(parameter);
+        }
+    }
+
+    private boolean isExpanded() {
+        return childNodes.size() != 0;
+    }
+
+    private boolean hasUnvisitedChild () {
+        for(MctsTreeNode<StateT, ActionT> childNode : childNodes) {
+            if (childNode.notYetVisited()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean notYetVisited() {
+        return visitCount == 0;
+    }
+
+    private MctsTreeNode<StateT, ActionT> confidentlyCalculateBestChildWithExplorationParameter(double parameter) {
+//        double uctValue = Double.MIN_VALUE;
+//        for(MctsTreeNode<StateT, ActionT> childNode : childNodes) {
+//
+//        }
+        return null;
     }
 }
