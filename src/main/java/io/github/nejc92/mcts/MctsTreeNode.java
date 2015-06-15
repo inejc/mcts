@@ -19,8 +19,8 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         this(representedState, null, null, cloner);
     }
 
-    private MctsTreeNode(StateT representedState, MctsTreeNode<StateT, ActionT> parentNode,
-                         ActionT incomingAction, Cloner cloner) {
+    private MctsTreeNode(StateT representedState, MctsTreeNode<StateT, ActionT> parentNode, ActionT incomingAction,
+                         Cloner cloner) {
         this.parentNode = parentNode;
         this.incomingAction = incomingAction;
         this.childNodes = new ArrayList<>();
