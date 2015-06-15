@@ -2,7 +2,7 @@ package io.github.nejc92.mcts;
 
 import java.util.List;
 
-public class TestState implements MctsDomainState<TestAgent, String> {
+public class TestState implements MctsDomainState<String> {
 
     private List<String> availableActions;
 
@@ -13,11 +13,6 @@ public class TestState implements MctsDomainState<TestAgent, String> {
     @Override
     public boolean isTerminal() {
         return false;
-    }
-
-    @Override
-    public TestAgent getCurrentAgent() {
-        return new TestAgent();
     }
 
     @Override
@@ -33,5 +28,10 @@ public class TestState implements MctsDomainState<TestAgent, String> {
     @Override
     public MctsDomainState performActionForCurrentAgent(String action) {
         return this;
+    }
+
+    @Override
+    public double performSimulationForCurrentAgent() {
+        return 0.0;
     }
 }

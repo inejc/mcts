@@ -2,31 +2,30 @@ package io.github.nejc92.mcts;
 
 import com.rits.cloning.Cloner;
 
-public class Mcts<StateT extends MctsDomainState<AgentT, ActionT>, AgentT extends MctsDomainAgent<StateT>, ActionT> {
+public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
 
+    private int numberOfIterations;
     private Cloner cloner;
-    private int numberOfPlayouts;
 
-    public Mcts(int numberOfPlayouts) {
-        this.numberOfPlayouts = numberOfPlayouts;
+    public Mcts(int numberOfIterations) {
+        this.numberOfIterations = numberOfIterations;
         cloner = new Cloner();
     }
 
     public ActionT uctSearch(StateT state) {
-        MctsTreeNode<StateT, AgentT, ActionT> rootNode = new MctsTreeNode<>(state, cloner);
-        AgentT currentAgent = state.getCurrentAgent();
-        for(int i=0; i<numberOfPlayouts; i++) {
-            MctsTreeNode<StateT, AgentT, ActionT> selectedChildNode = treePolicy(rootNode);
-            double simulationResult = currentAgent.getSimulationResult(selectedChildNode.deepCloneRepresentedState());
+        MctsTreeNode<StateT, ActionT> rootNode = new MctsTreeNode<>(state, cloner);
+        for(int i=0; i<numberOfIterations; i++) {
+            MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
+            double simulationResult = selectedChildNode.deepCloneRepresentedState().performSimulationForCurrentAgent();
             backPropagate(selectedChildNode, simulationResult);
         }
         return null;
     }
 
-    private MctsTreeNode<StateT, AgentT, ActionT> treePolicy(MctsTreeNode<StateT, AgentT, ActionT> rootNode) {
+    private MctsTreeNode<StateT, ActionT> treePolicy(MctsTreeNode<StateT, ActionT> rootNode) {
         return rootNode;
     }
 
-    private void backPropagate(MctsTreeNode<StateT, AgentT, ActionT> treeNode, double simulationResult) {
+    private void backPropagate(MctsTreeNode<StateT, ActionT> treeNode, double simulationResult) {
     }
 }
