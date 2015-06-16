@@ -10,49 +10,35 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     private MctsTreeNode<StateT, ActionT> parentNode;
     private ActionT incomingAction;
-    private List<MctsTreeNode<StateT, ActionT>> childNodes;
     private StateT representedState;
     private int visitCount;
     private double totalReward;
     private double explorationParameter;
+    private List<MctsTreeNode<StateT, ActionT>> childNodes;
     private Cloner cloner;
 
     public MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
-        this(representedState, null, null, explorationParameter, cloner);
+        this(null, null, representedState, explorationParameter, cloner);
     }
 
-    private MctsTreeNode(StateT representedState, MctsTreeNode<StateT, ActionT> parentNode, ActionT incomingAction,
+    private MctsTreeNode(MctsTreeNode<StateT, ActionT> parentNode, ActionT incomingAction, StateT representedState,
                          double explorationParameter, Cloner cloner) {
         this.parentNode = parentNode;
         this.incomingAction = incomingAction;
-        this.childNodes = new ArrayList<>();
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
         this.explorationParameter = explorationParameter;
+        this.childNodes = new ArrayList<>();
         this.cloner = cloner;
     }
 
-    private int getVisitCount() {
-        return visitCount;
-    }
-
     public MctsTreeNode<StateT, ActionT> getParentNode() {
-        if(isRootNode()) {
-            throw new UnsupportedOperationException("Operation not supported on root node");
-        }
-        else {
-            return parentNode;
-        }
+        return parentNode;
     }
 
-    public ActionT getIncomingAction() {
-        if(isRootNode()) {
-            throw new UnsupportedOperationException("Operation not supported on root node");
-        }
-        else {
-            return incomingAction;
-        }
+    private ActionT getIncomingAction() {
+        return incomingAction;
     }
 
     public boolean isRootNode() {
@@ -68,12 +54,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public MctsTreeNode<StateT, ActionT> addNewChildFromAction(ActionT action) {
-        if(!isUntriedAction(action)) {
+        if(!isUntriedAction(action))
             throw new IllegalArgumentException("Invalid action passed as function parameter");
-        }
-        else {
+        else
             return addNewChildFromUntriedAction(action);
-        }
     }
 
     private boolean isUntriedAction(ActionT action) {
@@ -109,7 +93,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     private MctsTreeNode<StateT, ActionT> createNewChildInstance(StateT representedState, ActionT incomingAction) {
         MctsTreeNode<StateT, ActionT> childNode = new MctsTreeNode<>(
-                representedState, this, incomingAction, explorationParameter, cloner);
+                this, incomingAction, representedState, explorationParameter, cloner);
         childNodes.add(childNode);
         return childNode;
     }
@@ -124,15 +108,12 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public MctsTreeNode<StateT, ActionT> getBestChild() {
-        if (hasUnvisitedChild()) {
+        if (hasUnvisitedChild())
             throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
-        }
-        else if (!isExpanded()) {
+        else if (!isExpanded())
             throw new UnsupportedOperationException("Operation not supported on unexpanded node");
-        }
-        else {
+        else
             return getBestChildConfidently();
-        }
     }
 
     private boolean hasUnvisitedChild () {
@@ -157,5 +138,9 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     private double calculateUctValue() {
         return totalReward / visitCount
                + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
+    }
+
+    private int getVisitCount() {
+        return visitCount;
     }
 }
