@@ -78,28 +78,41 @@ public class MctsTreeNodeTest {
     }
 
     @Test
-    public void testGetBestChildWithLotsOfVisits() {
+    public void testGetBestChildWithLessVisitsLessReward() {
+        MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        for (int i = 0; i < 20; i++) {
+            rootNode.updateDomainTheoreticValue(0);
+            if (i < 5) child0.updateDomainTheoreticValue(0.1); // visitCount:  5, totalReward: 0.5
+            else child1.updateDomainTheoreticValue(0.2);       // visitCount: 15, totalReward: 3
+        }
+        assertEquals(child0, rootNode.getBestChild());
+    }
+
+    @Test
+    public void testGetBestChildWithLessVisitsMoreReward() {
+        MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        for (int i = 0; i < 20; i++) {
+            rootNode.updateDomainTheoreticValue(0);
+            if (i < 5) child0.updateDomainTheoreticValue(0.5); // visitCount:  5, totalReward: 2.5
+            else child1.updateDomainTheoreticValue(0.1);       // visitCount: 15, totalReward: 1.5
+        }
+        assertEquals(child0, rootNode.getBestChild());
+    }
+
+    @Test
+    public void testGetBestChildWithSameVisitsLessReward() {
         MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
         MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
         for (int i = 0; i < 21; i++) {
             rootNode.updateDomainTheoreticValue(0);
-            if (i < 20) child0.updateDomainTheoreticValue(0.25); // totalReward: 5 visitCount: 20
-            else child1.updateDomainTheoreticValue(0.5);         // totalReward: 0.5 visitCount: 1
+            child0.updateDomainTheoreticValue(0.01); // visitCount: 20, totalReward: 0.2
+            child1.updateDomainTheoreticValue(0.02); // visitCount: 20, totalReward: 0.4
         }
         assertEquals(child1, rootNode.getBestChild());
     }
 
-    @Test
-    public void testGetBestChildWithSameVisits() {
-        MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
-        for (int i = 0; i < 21; i++) {
-            rootNode.updateDomainTheoreticValue(0);
-            child0.updateDomainTheoreticValue(0.01); // totalReward: 0.2 visitCount: 20
-            child1.updateDomainTheoreticValue(0.02); // totalReward: 0.4 visitCount: 20
-        }
-        assertEquals(child1, rootNode.getBestChild());
-    }
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildWithUnvisitedChildNodes() {
