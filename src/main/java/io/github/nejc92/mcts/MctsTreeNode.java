@@ -17,8 +17,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     private List<MctsTreeNode<StateT, ActionT>> childNodes;
     private Cloner cloner;
 
-    public MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
-        this(null, null, representedState, explorationParameter, cloner);
+    public static<StateT extends MctsDomainState<ActionT>, ActionT> MctsTreeNode<StateT, ActionT> createRootNode(
+            StateT representedState, double explorationParameter) {
+        Cloner cloner = new Cloner();
+        return new MctsTreeNode<>(null, null, representedState, explorationParameter, cloner);
     }
 
     private MctsTreeNode(MctsTreeNode<StateT, ActionT> parentNode, ActionT incomingAction, StateT representedState,

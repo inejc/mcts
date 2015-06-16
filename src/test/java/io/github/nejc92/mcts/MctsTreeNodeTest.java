@@ -18,14 +18,13 @@ public class MctsTreeNodeTest {
     private List<String> availableActions;
     private MctsTreeNode<TestState, String> rootNode;
     private TestState state;
-    private Cloner cloner = new Cloner();
 
     @Before
     public void setUp() {
         allPossibleActions = new ArrayList<>(Arrays.asList("0", "1", "2"));
         availableActions = allPossibleActions.subList(0, 2);
         state = new TestState(availableActions);
-        rootNode = new MctsTreeNode<>(state, EXPLORATION_PARAMETER, cloner);
+        rootNode = MctsTreeNode.createRootNode(state, EXPLORATION_PARAMETER);
     }
 
     @Test
