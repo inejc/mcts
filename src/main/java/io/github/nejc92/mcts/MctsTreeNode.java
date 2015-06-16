@@ -2,9 +2,9 @@ package io.github.nejc92.mcts;
 
 import com.rits.cloning.Cloner;
 
-import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
@@ -14,38 +14,44 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     private StateT representedState;
     private int visitCount;
     private double totalReward;
+    private double explorationParameter;
     private Cloner cloner;
 
-    public MctsTreeNode(StateT representedState, Cloner cloner) {
-        this(representedState, null, null, cloner);
+    public MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
+        this(representedState, null, null, explorationParameter, cloner);
     }
 
     private MctsTreeNode(StateT representedState, MctsTreeNode<StateT, ActionT> parentNode, ActionT incomingAction,
-                         Cloner cloner) {
+                         double explorationParameter, Cloner cloner) {
         this.parentNode = parentNode;
         this.incomingAction = incomingAction;
         this.childNodes = new ArrayList<>();
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
+        this.explorationParameter = explorationParameter;
         this.cloner = cloner;
     }
 
+    private int getVisitCount() {
+        return visitCount;
+    }
+
     public MctsTreeNode<StateT, ActionT> getParentNode() {
-        if(!isRootNode()) {
-            return parentNode;
+        if(isRootNode()) {
+            throw new UnsupportedOperationException("Operation not supported on root node");
         }
         else {
-            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
+            return parentNode;
         }
     }
 
     public ActionT getIncomingAction() {
-        if(!isRootNode()) {
-            return incomingAction;
+        if(isRootNode()) {
+            throw new UnsupportedOperationException("Operation not supported on root node");
         }
         else {
-            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
+            return incomingAction;
         }
     }
 
@@ -57,17 +63,17 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return representedState.isTerminal();
     }
 
-    // todo: no state's available actions? + exception messages + change to this.methodName() where necessary
+    // todo: no state's available actions? + exception messages
     public boolean isFullyExpanded() {
         return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
     }
 
     public MctsTreeNode<StateT, ActionT> addNewChildFromAction(ActionT action) {
-        if(isUntriedAction(action)) {
-            return addNewChildFromUntriedAction(action);
+        if(!isUntriedAction(action)) {
+            throw new IllegalArgumentException("Invalid action passed as function parameter");
         }
         else {
-            throw new IllegalArgumentException("Invalid action passed as function parameter");
+            return addNewChildFromUntriedAction(action);
         }
     }
 
@@ -82,11 +88,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     private List<ActionT> getTriedActionsForCurrentPlayer() {
-        List<ActionT> triedActions = new ArrayList<>();
-        for(MctsTreeNode<StateT, ActionT> childNode : childNodes) {
-            triedActions.add(childNode.getIncomingAction());
-        }
-        return triedActions;
+        return childNodes
+                .stream()
+                .map(MctsTreeNode::getIncomingAction)
+                .collect(Collectors.toList());
     }
 
     private MctsTreeNode<StateT, ActionT> addNewChildFromUntriedAction(ActionT incomingAction) {
@@ -105,7 +110,8 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     private MctsTreeNode<StateT, ActionT> createNewChildInstance(StateT representedState, ActionT incomingAction) {
-        MctsTreeNode<StateT, ActionT> childNode = new MctsTreeNode<>(representedState, this, incomingAction, cloner);
+        MctsTreeNode<StateT, ActionT> childNode = new MctsTreeNode<>(
+                representedState, this, incomingAction, explorationParameter, cloner);
         childNodes.add(childNode);
         return childNode;
     }
@@ -116,43 +122,45 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public ActionT getMostPromisingAction() {
-        return calculateBestChildWithExplorationParameter(0).getIncomingAction();
+        return getBestChild().getIncomingAction();
     }
 
-    public MctsTreeNode<StateT, ActionT> calculateBestChildWithExplorationParameter(double parameter) {
-        if (!isExpanded()) {
-            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
-        }
-        else if (this.hasUnvisitedChild()) {
+    public MctsTreeNode<StateT, ActionT> getBestChild() {
+        if (hasUnvisitedChild()) {
             throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
         }
-        else {
-            return confidentlyCalculateBestChildWithExplorationParameter(parameter);
+        else if (isExpanded()) {
+            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
         }
+        else {
+            return getBestChildConfidently();
+        }
+    }
+
+    private boolean hasUnvisitedChild () {
+        return childNodes
+                .stream()
+                .anyMatch(MctsTreeNode::isUnvisited);
+    }
+
+    private boolean isUnvisited() {
+        return visitCount == 0;
     }
 
     private boolean isExpanded() {
         return childNodes.size() != 0;
     }
 
-    private boolean hasUnvisitedChild () {
-        for(MctsTreeNode<StateT, ActionT> childNode : childNodes) {
-            if (childNode.notYetVisited()) {
-                return true;
-            }
-        }
-        return false;
+    private MctsTreeNode<StateT, ActionT> getBestChildConfidently() {
+        return childNodes
+                .stream()
+                .max((node1, node2) -> Double.compare(node1.calculateUctValue(), node2.calculateUctValue()))
+                .get();
     }
 
-    private boolean notYetVisited() {
-        return visitCount == 0;
-    }
-
-    private MctsTreeNode<StateT, ActionT> confidentlyCalculateBestChildWithExplorationParameter(double parameter) {
-//        double uctValue = Double.MIN_VALUE;
-//        for(MctsTreeNode<StateT, ActionT> childNode : childNodes) {
-//
-//        }
-        return null;
+    private double calculateUctValue() {
+        // todo: check if root
+        return totalReward / visitCount
+               + explorationParameter * (Math.sqrt((2 * Math.log(parentNode.getVisitCount())) / visitCount));
     }
 }

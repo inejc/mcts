@@ -5,10 +5,12 @@ import com.rits.cloning.Cloner;
 public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     private int numberOfIterations;
+    private double explorationParameter;
     private Cloner cloner;
 
-    public Mcts(int numberOfIterations) {
+    public Mcts(int numberOfIterations, double explorationParameter) {
         this.numberOfIterations = numberOfIterations;
+        this.explorationParameter = explorationParameter;
         cloner = new Cloner();
     }
 
@@ -21,7 +23,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     private MctsTreeNode<StateT, ActionT> createRootNode(StateT state) {
-        return new MctsTreeNode<>(state, cloner);
+        return new MctsTreeNode<>(state, explorationParameter, cloner);
     }
 
     private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode) {
