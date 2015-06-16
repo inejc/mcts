@@ -43,6 +43,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return incomingAction;
     }
 
+    private int getVisitCount() {
+        return visitCount;
+    }
+
     public boolean isRootNode() {
         return parentNode == null;
     }
@@ -105,17 +109,17 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         totalReward += rewardAddend;
     }
 
-    public ActionT getMostPromisingAction() {
-        return getBestChild().getIncomingAction();
+    public ActionT returnMostPromisingAction() {
+        return returnBestChild().getIncomingAction();
     }
 
-    public MctsTreeNode<StateT, ActionT> getBestChild() {
+    public MctsTreeNode<StateT, ActionT> returnBestChild() {
         if (hasUnvisitedChild())
             throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
         else if (!isExpanded())
             throw new UnsupportedOperationException("Operation not supported on unexpanded node");
         else
-            return getBestChildConfidently();
+            return returnBestChildConfidently();
     }
 
     private boolean hasUnvisitedChild () {
@@ -131,7 +135,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return childNodes.size() != 0;
     }
 
-    private MctsTreeNode<StateT, ActionT> getBestChildConfidently() {
+    private MctsTreeNode<StateT, ActionT> returnBestChildConfidently() {
         return childNodes.stream()
                 .max((node1, node2) -> Double.compare(node1.calculateUctValue(), node2.calculateUctValue()))
                 .get();
@@ -140,9 +144,5 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     private double calculateUctValue() {
         return totalReward / visitCount
                + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
-    }
-
-    private int getVisitCount() {
-        return visitCount;
     }
 }

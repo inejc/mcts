@@ -1,6 +1,5 @@
 package io.github.nejc92.mcts;
 
-import com.rits.cloning.Cloner;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -85,7 +84,7 @@ public class MctsTreeNodeTest {
             if (i < 5) child0.updateDomainTheoreticValue(0.1); // visitCount:  5, totalReward: 0.5
             else child1.updateDomainTheoreticValue(0.2);       // visitCount: 15, totalReward: 3
         }
-        assertEquals(child0, rootNode.getBestChild());
+        assertEquals(child0, rootNode.returnBestChild());
     }
 
     @Test
@@ -97,7 +96,7 @@ public class MctsTreeNodeTest {
             if (i < 5) child0.updateDomainTheoreticValue(0.5); // visitCount:  5, totalReward: 2.5
             else child1.updateDomainTheoreticValue(0.1);       // visitCount: 15, totalReward: 1.5
         }
-        assertEquals(child0, rootNode.getBestChild());
+        assertEquals(child0, rootNode.returnBestChild());
     }
 
     @Test
@@ -109,18 +108,18 @@ public class MctsTreeNodeTest {
             child0.updateDomainTheoreticValue(0.01); // visitCount: 20, totalReward: 0.2
             child1.updateDomainTheoreticValue(0.02); // visitCount: 20, totalReward: 0.4
         }
-        assertEquals(child1, rootNode.getBestChild());
+        assertEquals(child1, rootNode.returnBestChild());
     }
 
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildWithUnvisitedChildNodes() {
         MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        assertEquals(child0, rootNode.getBestChild());
+        assertEquals(child0, rootNode.returnBestChild());
     }
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildWithoutChildNodes() {
-        rootNode.getBestChild();
+        rootNode.returnBestChild();
     }
 }
