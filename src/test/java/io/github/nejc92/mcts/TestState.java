@@ -29,9 +29,4 @@ public class TestState implements MctsDomainState<String> {
     public MctsDomainState performActionForCurrentAgent(String action) {
         return this;
     }
-
-    @Override
-    public double performSimulationForCurrentAgent() {
-        return 0.0;
-    }
 }

@@ -8,5 +8,4 @@ public interface MctsDomainState<ActionT> {
     List<ActionT> getAvailableActionsForCurrentAgent();
     int getNumberOfAvailableActionsForCurrentAgent();
     MctsDomainState performActionForCurrentAgent(ActionT action);
-    double performSimulationForCurrentAgent();
 }

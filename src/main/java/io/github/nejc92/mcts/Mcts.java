@@ -1,6 +1,6 @@
 package io.github.nejc92.mcts;
 
-public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
+public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolicyT extends MctsDefaultPolicy<StateT>> {
 
     private int numberOfIterations;
 
@@ -8,17 +8,17 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT> {
         this.numberOfIterations = numberOfIterations;
     }
 
-    public ActionT uctSearch(StateT state, double explorationParameter) {
+    public ActionT uctSearch(StateT state, double explorationParameter, DefaultPolicyT defaultPolicy) {
         MctsTreeNode<StateT, ActionT> rootNode = MctsTreeNode.createRootNode(state, explorationParameter);
         for(int i = 0; i < numberOfIterations; i++) {
-            performOneMctsIteration(rootNode);
+            performOneMctsIteration(rootNode, defaultPolicy);
         }
         return null;
     }
 
-    private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode) {
+    private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode, DefaultPolicyT defaultPolicy) {
         MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
-        double simulationResult = selectedChildNode.deepCloneRepresentedState().performSimulationForCurrentAgent();
+        double simulationResult = defaultPolicy.performPlayoutFromState(selectedChildNode.deepCloneRepresentedState());
         backPropagate(selectedChildNode, simulationResult);
     }
 

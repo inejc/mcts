@@ -104,11 +104,6 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return childNode;
     }
 
-    public void updateDomainTheoreticValue(double rewardAddend) {
-        visitCount += 1;
-        totalReward += rewardAddend;
-    }
-
     public ActionT returnMostPromisingAction() {
         return returnBestChild().getIncomingAction();
     }
@@ -144,5 +139,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     private double calculateUctValue() {
         return totalReward / visitCount
                + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
+    }
+
+    public void updateDomainTheoreticValue(double rewardAddend) {
+        visitCount += 1;
+        totalReward += rewardAddend;
     }
 }
