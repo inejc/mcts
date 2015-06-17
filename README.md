@@ -9,13 +9,14 @@ Create the implementation of MctsDomainState for a specific domain state.
 ```java
 public class DomainState extends MctsDomainState<ActionT> {...}
 ```
-Create the implementation of MctsDefaultPolicy for statistically biased playout.
+Create the implementation of MctsDefaultPolicy for a statistically biased playout.
 ```java
-public class RandomDefaultPolicy extends MctsDefaultPolicy<DomainState> {...}
+public class StatisticallyBiasedPlayout extends MctsDefaultPolicy<DomainState> {...}
 ```
-Call uctSearch() to get the most promising action.
+Create an instance of Mcts and call uctSearch() to get the most promising action.
 ```java
-Mcts<DomainState, ActionT, RandomDefaultPolicy> mcts = new Mcts<>(numberOfIterations);
+Mcts<DomainState, ActionT, StatisticallyBiasedPlayout> mcts = new Mcts<>(numberOfIterations);
+
 ActionT mostPromisingAction = mcts.uctSearch(state, explorationParameter, defaultPolicy);
 ```
 
