@@ -54,19 +54,21 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public MctsTreeNode<StateT, ActionT> addNewChildFromAction(ActionT action) {
-        if(!isUntriedAction(action))
+        if (!isUntriedAction(action))
             throw new IllegalArgumentException("Invalid action passed as function parameter");
         else
             return addNewChildFromUntriedAction(action);
     }
 
     private boolean isUntriedAction(ActionT action) {
-        return returnUntriedActionsForCurrentAgent().contains(action);
+        return getUntriedActionsForCurrentAgent().contains(action);
     }
 
-    public List<ActionT> returnUntriedActionsForCurrentAgent() {
-        List<ActionT> untriedActions = new ArrayList<>(representedState.getAvailableActionsForCurrentAgent());
-        untriedActions.removeAll(getTriedActionsForCurrentAgent());
+    public List<ActionT> getUntriedActionsForCurrentAgent() {
+        List<ActionT> availableActions = representedState.getAvailableActionsForCurrentAgent();
+        List<ActionT> untriedActions = new ArrayList<>(availableActions);
+        List<ActionT> triedActions = getTriedActionsForCurrentAgent();
+        untriedActions.removeAll(triedActions);
         return untriedActions;
     }
 
@@ -78,36 +80,36 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     private MctsTreeNode<StateT, ActionT> addNewChildFromUntriedAction(ActionT incomingAction) {
         StateT childNodeState = getNewStateFromAction(incomingAction);
-        return createNewChildInstance(childNodeState, incomingAction);
+        return appendNewChildInstance(childNodeState, incomingAction);
     }
 
     private StateT getNewStateFromAction(ActionT action) {
-        StateT representedStateClone = returnDeepCloneOfRepresentedState();
+        StateT representedStateClone = getDeepCloneOfRepresentedState();
         representedStateClone.performActionForCurrentAgent(action);
         return representedStateClone;
     }
 
-    public StateT returnDeepCloneOfRepresentedState() {
+    public StateT getDeepCloneOfRepresentedState() {
         return cloner.deepClone(representedState);
     }
 
-    private MctsTreeNode<StateT, ActionT> createNewChildInstance(StateT representedState, ActionT incomingAction) {
+    private MctsTreeNode<StateT, ActionT> appendNewChildInstance(StateT representedState, ActionT incomingAction) {
         MctsTreeNode<StateT, ActionT> childNode = new MctsTreeNode<>(
                 this, incomingAction, representedState, explorationParameter, cloner);
         childNodes.add(childNode);
         return childNode;
     }
 
-    public ActionT returnMostPromisingAction() {
+    public ActionT getMostPromisingAction() {
         validateBestChildComputable();
         MctsTreeNode<StateT, ActionT> bestChildWithoutExploration =
-                returnBestChildConfidentlyWithExploration(NO_EXPLORATION);
+                getBestChildConfidentlyWithExploration(NO_EXPLORATION);
         return bestChildWithoutExploration.getIncomingAction();
     }
 
-    public MctsTreeNode<StateT, ActionT> returnBestChild() {
+    public MctsTreeNode<StateT, ActionT> getBestChild() {
         validateBestChildComputable();
-        return returnBestChildConfidentlyWithExploration(explorationParameter);
+        return getBestChildConfidentlyWithExploration(explorationParameter);
     }
 
     private void validateBestChildComputable() {
@@ -130,7 +132,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return visitCount == 0;
     }
 
-    private MctsTreeNode<StateT, ActionT> returnBestChildConfidentlyWithExploration(double explorationParameter) {
+    private MctsTreeNode<StateT, ActionT> getBestChildConfidentlyWithExploration(double explorationParameter) {
         return childNodes.stream()
                 .max((node1, node2) -> Double.compare(
                         node1.calculateUctValue(explorationParameter),
