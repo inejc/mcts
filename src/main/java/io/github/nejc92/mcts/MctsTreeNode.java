@@ -55,10 +55,6 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return representedState.isTerminal();
     }
 
-    public boolean isFullyExpanded() {
-        return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
-    }
-
     public MctsTreeNode<StateT, ActionT> addNewChildFromAction(ActionT action) {
         if(!isUntriedAction(action))
             throw new IllegalArgumentException("Invalid action passed as function parameter");
@@ -105,16 +101,25 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     public ActionT returnMostPromisingAction() {
-        return returnBestChild().getIncomingAction();
+        validateBestChildComputable();
+        MctsTreeNode<StateT, ActionT> bestChildWithoutExploration = returnBestChildConfidentlyWithExploration(0);
+        return bestChildWithoutExploration.getIncomingAction();
     }
 
     public MctsTreeNode<StateT, ActionT> returnBestChild() {
-        if (hasUnvisitedChild())
+        validateBestChildComputable();
+        return returnBestChildConfidentlyWithExploration(explorationParameter);
+    }
+
+    private void validateBestChildComputable() {
+        if (!isFullyExpanded())
+            throw new UnsupportedOperationException("Operation not supported if node not fully expanded");
+        else if (hasUnvisitedChild())
             throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
-        else if (!isExpanded())
-            throw new UnsupportedOperationException("Operation not supported on unexpanded node");
-        else
-            return returnBestChildConfidently();
+    }
+
+    public boolean isFullyExpanded() {
+        return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
     }
 
     private boolean hasUnvisitedChild () {
@@ -126,17 +131,14 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
         return visitCount == 0;
     }
 
-    private boolean isExpanded() {
-        return childNodes.size() != 0;
-    }
-
-    private MctsTreeNode<StateT, ActionT> returnBestChildConfidently() {
+    private MctsTreeNode<StateT, ActionT> returnBestChildConfidentlyWithExploration(double explorationParameter) {
         return childNodes.stream()
-                .max((node1, node2) -> Double.compare(node1.calculateUctValue(), node2.calculateUctValue()))
-                .get();
+                .max((node1, node2) -> Double.compare(
+                        node1.calculateUctValue(explorationParameter),
+                        node2.calculateUctValue(explorationParameter))).get();
     }
 
-    private double calculateUctValue() {
+    private double calculateUctValue(double explorationParameter) {
         return totalReward / visitCount
                + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
     }

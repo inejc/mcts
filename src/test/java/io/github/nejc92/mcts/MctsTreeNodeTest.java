@@ -111,15 +111,33 @@ public class MctsTreeNodeTest {
         assertEquals(child1, rootNode.returnBestChild());
     }
 
-
-    @Test(expected= UnsupportedOperationException.class)
-    public void testGetBestChildWithUnvisitedChildNodes() {
+    @Test
+    public void testGetMostPromisingAction() {
         MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        assertEquals(child0, rootNode.returnBestChild());
+        MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        for (int i = 0; i < 20; i++) {
+            rootNode.updateDomainTheoreticValue(0);
+            if (i < 3) child0.updateDomainTheoreticValue(0.1); // visitCount:  3, totalReward: 0.3
+            else child1.updateDomainTheoreticValue(0.05);      // visitCount: 17, totalReward: 0.85
+        }
+        assertEquals(availableActions.get(0), rootNode.returnMostPromisingAction());
     }
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildWithoutChildNodes() {
         rootNode.returnBestChild();
+    }
+
+    @Test(expected= UnsupportedOperationException.class)
+    public void testGetBestChildNotFullyExpanded() {
+        MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        rootNode.returnBestChild();
+    }
+
+    @Test(expected= UnsupportedOperationException.class)
+    public void testGetBestChildWithUnvisitedChildNodes() {
+        MctsTreeNode<TestState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<TestState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        assertEquals(child0, rootNode.returnBestChild());
     }
 }
