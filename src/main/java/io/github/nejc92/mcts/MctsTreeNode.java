@@ -67,10 +67,10 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     private boolean isUntriedAction(ActionT action) {
-        return getUntriedActionsForCurrentAgent().contains(action);
+        return returnUntriedActionsForCurrentAgent().contains(action);
     }
 
-    public List<ActionT> getUntriedActionsForCurrentAgent() {
+    public List<ActionT> returnUntriedActionsForCurrentAgent() {
         List<ActionT> untriedActions = new ArrayList<>(representedState.getAvailableActionsForCurrentAgent());
         untriedActions.removeAll(getTriedActionsForCurrentAgent());
         return untriedActions;
@@ -88,12 +88,12 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
     }
 
     private StateT getNewStateFromAction(ActionT action) {
-        StateT representedStateClone = deepCloneRepresentedState();
+        StateT representedStateClone = returnDeepCloneOfRepresentedState();
         representedStateClone.performActionForCurrentAgent(action);
         return representedStateClone;
     }
 
-    public StateT deepCloneRepresentedState() {
+    public StateT returnDeepCloneOfRepresentedState() {
         return cloner.deepClone(representedState);
     }
 

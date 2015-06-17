@@ -13,17 +13,18 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolic
         for(int i = 0; i < numberOfIterations; i++) {
             performOneMctsIteration(rootNode, defaultPolicy);
         }
-        return null;
+        return rootNode.returnMostPromisingAction();
     }
 
     private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode, DefaultPolicyT defaultPolicy) {
         MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
-        double simulationResult = defaultPolicy.performPlayoutFromState(selectedChildNode.deepCloneRepresentedState());
+        StateT selectedChildsStateClone = selectedChildNode.returnDeepCloneOfRepresentedState();
+        double simulationResult = defaultPolicy.performPlayoutFromState(selectedChildsStateClone);
         backPropagate(selectedChildNode, simulationResult);
     }
 
-    private MctsTreeNode<StateT, ActionT> treePolicy(MctsTreeNode<StateT, ActionT> rootNode) {
-        return rootNode;
+    private MctsTreeNode<StateT, ActionT> treePolicy(MctsTreeNode<StateT, ActionT> treeNode) {
+        return treeNode;
     }
 
     private void backPropagate(MctsTreeNode<StateT, ActionT> treeNode, double simulationResult) {

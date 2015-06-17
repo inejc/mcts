@@ -28,7 +28,7 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testDeepCloneRepresentedState() {
-        TestState clone = rootNode.deepCloneRepresentedState();
+        TestState clone = rootNode.returnDeepCloneOfRepresentedState();
         assertNotEquals(state, clone);
     }
 
@@ -41,12 +41,12 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testGetUntriedActionsForCurrentPlayer() {
-        assertEquals(availableActions, rootNode.getUntriedActionsForCurrentAgent());
+        assertEquals(availableActions, rootNode.returnUntriedActionsForCurrentAgent());
         rootNode.addNewChildFromAction(availableActions.get(0));
         availableActions.remove(0);
-        assertEquals(availableActions, rootNode.getUntriedActionsForCurrentAgent());
+        assertEquals(availableActions, rootNode.returnUntriedActionsForCurrentAgent());
         rootNode.addNewChildFromAction(availableActions.get(0));
-        assertEquals(new ArrayList<String>(), rootNode.getUntriedActionsForCurrentAgent());
+        assertEquals(new ArrayList<String>(), rootNode.returnUntriedActionsForCurrentAgent());
     }
 
     @Test
