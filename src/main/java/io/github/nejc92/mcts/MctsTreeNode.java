@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
+    private static final double NO_EXPLORATION = 0;
+
     private MctsTreeNode<StateT, ActionT> parentNode;
     private ActionT incomingAction;
     private StateT representedState;
@@ -45,10 +47,6 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     private int getVisitCount() {
         return visitCount;
-    }
-
-    public boolean isRootNode() {
-        return parentNode == null;
     }
 
     public boolean representsTerminalState() {
@@ -102,7 +100,8 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT>, ActionT> {
 
     public ActionT returnMostPromisingAction() {
         validateBestChildComputable();
-        MctsTreeNode<StateT, ActionT> bestChildWithoutExploration = returnBestChildConfidentlyWithExploration(0);
+        MctsTreeNode<StateT, ActionT> bestChildWithoutExploration =
+                returnBestChildConfidentlyWithExploration(NO_EXPLORATION);
         return bestChildWithoutExploration.getIncomingAction();
     }
 

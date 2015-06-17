@@ -33,13 +33,6 @@ public class MctsTreeNodeTest {
     }
 
     @Test
-    public void isRootNode() {
-        MctsTreeNode<TestState, String> child = rootNode.addNewChildFromAction(allPossibleActions.get(0));
-        assertTrue(rootNode.isRootNode());
-        assertFalse(child.isRootNode());
-    }
-
-    @Test
     public void testGetUntriedActionsForCurrentPlayer() {
         assertEquals(availableActions, rootNode.returnUntriedActionsForCurrentAgent());
         rootNode.addNewChildFromAction(availableActions.get(0));
