@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolicyT extends MctsDefaultPolicy<StateT>> {
 
+    private static final int FIRST = 0;
+
     private int numberOfIterations;
 
     public Mcts(int numberOfIterations) {
@@ -21,7 +23,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolic
 
     private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode, DefaultPolicyT defaultPolicy) {
         MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
-        double reward = returnRewardFromDefaultPolicy(selectedChildNode, defaultPolicy);
+        double reward = getRewardFromDefaultPolicy(selectedChildNode, defaultPolicy);
         backPropagate(selectedChildNode, reward);
     }
 
@@ -37,12 +39,16 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolic
 
     private MctsTreeNode<StateT, ActionT> expand(MctsTreeNode<StateT, ActionT> treeNode) {
         List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
-        Collections.shuffle(untriedActions);
-        ActionT randomUntriedAction = untriedActions.get(0);
+        ActionT randomUntriedAction = getRandomActionFrom(untriedActions);
         return treeNode.addNewChildFromAction(randomUntriedAction);
     }
 
-    private double returnRewardFromDefaultPolicy(MctsTreeNode<StateT, ActionT> treeNode, DefaultPolicyT policy) {
+    private ActionT getRandomActionFrom(List<ActionT> actions) {
+        Collections.shuffle(actions);
+        return actions.get(FIRST);
+    }
+
+    private double getRewardFromDefaultPolicy(MctsTreeNode<StateT, ActionT> treeNode, DefaultPolicyT policy) {
         StateT treeNodesStateClone = treeNode.getDeepCloneOfRepresentedState();
         return policy.performPlayoutFromState(treeNodesStateClone);
     }

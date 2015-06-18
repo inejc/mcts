@@ -1,12 +1,14 @@
-package io.github.nejc92.mcts;
+package io.github.nejc92.mcts.implementations;
+
+import io.github.nejc92.mcts.MctsDomainState;
 
 import java.util.List;
 
-public class TestState implements MctsDomainState<String> {
+public class SimpleState implements MctsDomainState<String> {
 
     private List<String> availableActions;
 
-    public TestState(List<String> availableActions) {
+    public SimpleState(List<String> availableActions) {
         this.availableActions = availableActions;
     }
 
