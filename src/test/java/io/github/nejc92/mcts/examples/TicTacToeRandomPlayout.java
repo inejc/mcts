@@ -1,8 +1,8 @@
-package io.github.nejc92.mcts.implementations;
+package io.github.nejc92.mcts.examples;
 
 import io.github.nejc92.mcts.MctsDefaultPolicy;
 
-public class RandomTicTacToePlayout implements MctsDefaultPolicy<TicTacToeState> {
+public class TicTacToeRandomPlayout implements MctsDefaultPolicy<TicTacToeState> {
 
     @Override
     public double performPlayoutFromState(TicTacToeState state) {

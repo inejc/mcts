@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolicyT extends MctsDefaultPolicy<StateT>> {
 
-    private static final int FIRST = 0;
+    private static final int FIRST_ELEMENT = 0;
 
     private int numberOfIterations;
 
@@ -45,7 +45,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, DefaultPolic
 
     private ActionT getRandomActionFrom(List<ActionT> actions) {
         Collections.shuffle(actions);
-        return actions.get(FIRST);
+        return actions.get(FIRST_ELEMENT);
     }
 
     private double getRewardFromDefaultPolicy(MctsTreeNode<StateT, ActionT> treeNode, DefaultPolicyT policy) {

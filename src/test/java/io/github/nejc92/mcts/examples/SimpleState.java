@@ -1,10 +1,16 @@
-package io.github.nejc92.mcts.implementations;
+package io.github.nejc92.mcts.examples;
 
 import io.github.nejc92.mcts.MctsDomainState;
 
 import java.util.List;
 
-public class TicTacToeState implements MctsDomainState<String> {
+public class SimpleState implements MctsDomainState<String> {
+
+    private List<String> availableActions;
+
+    public SimpleState(List<String> availableActions) {
+        this.availableActions = availableActions;
+    }
 
     @Override
     public boolean isTerminal() {
@@ -13,16 +19,16 @@ public class TicTacToeState implements MctsDomainState<String> {
 
     @Override
     public List<String> getAvailableActionsForCurrentAgent() {
-        return null;
+        return availableActions;
     }
 
     @Override
     public int getNumberOfAvailableActionsForCurrentAgent() {
-        return 0;
+        return getAvailableActionsForCurrentAgent().size();
     }
 
     @Override
     public MctsDomainState performActionForCurrentAgent(String action) {
-        return null;
+        return this;
     }
 }

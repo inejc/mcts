@@ -1,6 +1,6 @@
 package io.github.nejc92.mcts;
 
-import io.github.nejc92.mcts.implementations.SimpleState;
+import io.github.nejc92.mcts.examples.SimpleState;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -124,14 +124,14 @@ public class MctsTreeNodeTest {
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildNotFullyExpanded() {
-        MctsTreeNode<SimpleState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        rootNode.addNewChildFromAction(availableActions.get(0));
         rootNode.getBestChild();
     }
 
     @Test(expected= UnsupportedOperationException.class)
     public void testGetBestChildWithUnvisitedChildNodes() {
-        MctsTreeNode<SimpleState, String> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<SimpleState, String> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
-        assertEquals(child0, rootNode.getBestChild());
+        rootNode.addNewChildFromAction(availableActions.get(0));
+        rootNode.addNewChildFromAction(availableActions.get(1));
+        rootNode.getBestChild();
     }
 }
