@@ -29,6 +29,10 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
         this.board = board;
     }
 
+    protected char[][] getBoard() {
+        return board;
+    }
+
     @Override
     public boolean isTerminal() {
         return isDraw() || somePlayerWon();

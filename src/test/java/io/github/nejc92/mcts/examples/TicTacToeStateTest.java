@@ -2,6 +2,10 @@ package io.github.nejc92.mcts.examples;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class TicTacToeStateTest {
@@ -10,9 +14,9 @@ public class TicTacToeStateTest {
     private static final char CROSS_PLAYER = 'X';
 
     private static final char[][] NON_TERMINAL_BOARD = new char[][] {
-            {'X', '-', 'O'},
-            {'-', 'O', '-'},
-            {'X', 'X', '-'}
+        {'X', '-', 'O'},
+        {'-', 'O', '-'},
+        {'X', 'X', '-'}
     };
 
     private static final char[][] DRAW_BOARD = new char[][] {
@@ -123,5 +127,33 @@ public class TicTacToeStateTest {
         assertTrue(state.isTerminal());
         state.setBoard(DRAW_BOARD);
         assertTrue(state.isTerminal());
+    }
+
+    @Test
+    public void testGetAvailableActionsForCurrentAgent() {
+        state.setBoard(NON_TERMINAL_BOARD);
+        List<TicTacToeAction> expectedAvailableActions = new ArrayList<>(Arrays.asList(
+                new TicTacToeAction(0, 1), new TicTacToeAction(1, 0),
+                new TicTacToeAction(1, 2), new TicTacToeAction(2, 2)
+        ));
+        assertEquals(expectedAvailableActions, state.getAvailableActionsForCurrentAgent());
+    }
+
+    @Test
+    public void testPerformValidActionForCurrentAgent() {
+        state.setBoard(NON_TERMINAL_BOARD);
+        char[][] expectedBoard = new char[][] {
+                {'X', 'O', 'O'},
+                {'-', 'O', '-'},
+                {'X', 'X', '-'}
+        };
+        state.performActionForCurrentAgent(new TicTacToeAction(0, 1));
+        assertArrayEquals(expectedBoard, state.getBoard());
+    }
+
+    @Test(expected= IllegalArgumentException.class)
+    public void testPerformInvalidActionForCurrentAgent() {
+        state.setBoard(NON_TERMINAL_BOARD);
+        state.performActionForCurrentAgent(new TicTacToeAction(0, 2));
     }
 }
