@@ -7,11 +7,11 @@ JUnit4, Java cloning library
 ## Usage
 Create the implementation of MctsDomainState.
 ```java
-public class GameState extends MctsDomainState<ActionT> {...}
+public class GameState implements MctsDomainState<Action> {...}
 ```
-Create the implementation of MctsDomainAgent for a specific domain agent (player).
+Create the implementation of MctsDomainAgent.
 ```java
-public class Player extends MctsDomainAgent<GameState> {...}
+public class Player implements MctsDomainAgent<GameState> {...}
 ```
 Create an instance of Mcts object and invoke uctSearch() to get the most promising action.
 ```java
