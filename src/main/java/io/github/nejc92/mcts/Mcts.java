@@ -13,7 +13,7 @@ public class Mcts<ActionT, StateT extends MctsDomainState<ActionT>, AgentT exten
         this.numberOfIterations = numberOfIterations;
     }
 
-    public ActionT uctSearch(StateT state, double explorationParameter, AgentT agentInvoking) {
+    public ActionT uctSearch(StateT state, AgentT agentInvoking, double explorationParameter) {
         MctsTreeNode<ActionT, StateT> rootNode = MctsTreeNode.createRootNode(state, explorationParameter);
         for (int i = 0; i < numberOfIterations; i++) {
             performOneMctsIteration(rootNode, agentInvoking);

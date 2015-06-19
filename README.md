@@ -5,19 +5,19 @@ This is a Java implementation of Monte Carlo Tree Search method for the hide-and
 JUnit4, Java cloning library
 
 ## Usage
-Create the implementation of MctsDomainState for a specific domain state.
+Create the implementation of MctsDomainState.
 ```java
-public class DomainState extends MctsDomainState<ActionT> {...}
+public class GameState extends MctsDomainState<ActionT> {...}
 ```
-Create the implementation of MctsDefaultPolicy for a statistically biased playout.
+Create the implementation of MctsDomainAgent for a specific domain agent (player).
 ```java
-public class StatisticallyBiasedPlayout extends MctsDefaultPolicy<DomainState> {...}
+public class Player extends MctsDomainAgent<GameState> {...}
 ```
-Create an instance of Mcts and call uctSearch() to get the most promising action.
+Create an instance of Mcts object and invoke uctSearch() to get the most promising action.
 ```java
-Mcts<DomainState, ActionT, StatisticallyBiasedPlayout> mcts = new Mcts<>(numberOfIterations);
+Mcts<Action, GameState, Player> mcts = new Mcts<>(numberOfIterations);
 
-ActionT mostPromisingAction = mcts.uctSearch(state, explorationParameter, defaultPolicy);
+Action mostPromisingAction = mcts.uctSearch(state, player, explorationParameter);
 ```
 
 ## License
