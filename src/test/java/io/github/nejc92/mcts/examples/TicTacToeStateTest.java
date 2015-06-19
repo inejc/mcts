@@ -132,9 +132,8 @@ public class TicTacToeStateTest {
     @Test
     public void testGetAvailableActionsForCurrentAgent() {
         state.setBoard(NON_TERMINAL_BOARD);
-        List<TicTacToeAction> expectedAvailableActions = new ArrayList<>(Arrays.asList(
-                new TicTacToeAction(0, 1), new TicTacToeAction(1, 0),
-                new TicTacToeAction(1, 2), new TicTacToeAction(2, 2)
+        List<String> expectedAvailableActions = new ArrayList<>(Arrays.asList(
+                "0-1", "1-0", "1-2", "2-2"
         ));
         assertEquals(expectedAvailableActions, state.getAvailableActionsForCurrentAgent());
     }
@@ -143,17 +142,17 @@ public class TicTacToeStateTest {
     public void testPerformValidActionForCurrentAgent() {
         state.setBoard(NON_TERMINAL_BOARD);
         char[][] expectedBoard = new char[][] {
-                {'X', 'O', 'O'},
-                {'-', 'O', '-'},
-                {'X', 'X', '-'}
+            {'X', 'O', 'O'},
+            {'-', 'O', '-'},
+            {'X', 'X', '-'}
         };
-        state.performActionForCurrentAgent(new TicTacToeAction(0, 1));
+        state.performActionForCurrentAgent("0-1");
         assertArrayEquals(expectedBoard, state.getBoard());
     }
 
     @Test(expected= IllegalArgumentException.class)
     public void testPerformInvalidActionForCurrentAgent() {
         state.setBoard(NON_TERMINAL_BOARD);
-        state.performActionForCurrentAgent(new TicTacToeAction(0, 2));
+        state.performActionForCurrentAgent("0-2");
     }
 }

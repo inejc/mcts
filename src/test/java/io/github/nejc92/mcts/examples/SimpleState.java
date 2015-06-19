@@ -18,13 +18,13 @@ public class SimpleState implements MctsDomainState<String> {
     }
 
     @Override
-    public List<String> getAvailableActionsForCurrentAgent() {
-        return availableActions;
+    public int getNumberOfAvailableActionsForCurrentAgent() {
+        return getAvailableActionsForCurrentAgent().size();
     }
 
     @Override
-    public int getNumberOfAvailableActionsForCurrentAgent() {
-        return getAvailableActionsForCurrentAgent().size();
+    public List<String> getAvailableActionsForCurrentAgent() {
+        return availableActions;
     }
 
     @Override

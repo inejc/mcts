@@ -3,26 +3,33 @@ package io.github.nejc92.mcts.examples;
 import io.github.nejc92.mcts.MctsDomainState;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
+public class TicTacToeState implements MctsDomainState<String> {
 
     private static final char NOUGHT_PLAYER = 'O';
     private static final char CROSS_PLAYER = 'X';
     private static final char EMPTY_BOARD_POSITION = '-';
-    private static final int BOARD_COLUMNS = 3;
     private static final int BOARD_ROWS = 3;
+    private static final int BOARD_COLUMNS = 3;
+    private static final int ACTION_ROW_POSITION = 0;
+    private static final int ACTION_COLUMN_POSITION = 1;
+    private static final String ACTION_DELIMITER = "-";
 
     private char[][] board;
     private char currentPlayer;
 
     public TicTacToeState() {
-        board = new char[][] {
-            {'-', '-', '-'},
-            {'-', '-', '-'},
-            {'-', '-', '-'}
-        };
+        board = new char[BOARD_ROWS][BOARD_COLUMNS];
+        initializeEmptyBoard();
         currentPlayer = NOUGHT_PLAYER;
+    }
+
+    private void initializeEmptyBoard() {
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            Arrays.fill(board[row], EMPTY_BOARD_POSITION);
+        }
     }
 
     protected void setBoard(char[][] board) {
@@ -40,12 +47,18 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
 
     protected boolean isDraw() {
         for (int row = 0; row < BOARD_ROWS; row++) {
-            for (int column = 0; column < BOARD_COLUMNS; column++) {
-                if (board[row][column] == EMPTY_BOARD_POSITION)
-                    return false;
-            }
+            if (boardRowContainsEmptyPosition(board[row]))
+                return false;
         }
         return true;
+    }
+
+    private boolean boardRowContainsEmptyPosition(char[] row) {
+        for (int column = 0; column < BOARD_COLUMNS; column++) {
+            if (row[column] == EMPTY_BOARD_POSITION)
+                return true;
+        }
+        return false;
     }
 
     private boolean somePlayerWon() {
@@ -60,10 +73,7 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
 
     protected boolean boardContainsPlayersFullRow(char player) {
         for (int row = 0; row < BOARD_ROWS; row++) {
-            char position0 = board[row][0];
-            char position1 = board[row][1];
-            char position2 = board[row][2];
-            if (position0 == player && position1 == player && position2 == player)
+            if (board[row][0] == player && board[row][1] == player && board[row][2] == player)
                 return true;
         }
         return false;
@@ -71,10 +81,7 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
 
     protected boolean boardContainsPlayersFullColumn(char player) {
         for (int column = 0; column < BOARD_COLUMNS; column++) {
-            char position0 = board[0][column];
-            char position1 = board[1][column];
-            char position2 = board[2][column];
-            if (position0 == player && position1 == player && position2 == player)
+            if (board[0][column] == player && board[1][column] == player && board[2][column] == player)
                 return true;
         }
         return false;
@@ -87,7 +94,7 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
 
     private boolean boardContainsPlayersFullAscendingDiagonal(char player) {
         for (int i = 0; i < BOARD_ROWS; i++) {
-            if (board[i][i] != player)
+            if (board[i][BOARD_COLUMNS - 1 - i] != player)
                 return false;
         }
         return true;
@@ -95,22 +102,10 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
 
     private boolean boardContainsPlayersFullDescendingDiagonal(char player) {
         for (int i = 0; i < BOARD_ROWS; i++) {
-            if (board[i][BOARD_COLUMNS - 1 - i] != player)
+            if (board[i][i] != player)
                 return false;
         }
         return true;
-    }
-
-    @Override
-    public List<TicTacToeAction> getAvailableActionsForCurrentAgent() {
-        List<TicTacToeAction> availableActions = new ArrayList<>();
-        for (int row = 0; row < BOARD_ROWS; row++) {
-            for (int column = 0; column < BOARD_COLUMNS; column++) {
-                if (board[row][column] == EMPTY_BOARD_POSITION)
-                    availableActions.add(new TicTacToeAction(row, column));
-            }
-        }
-        return availableActions;
     }
 
     @Override
@@ -119,20 +114,66 @@ public class TicTacToeState implements MctsDomainState<TicTacToeAction> {
     }
 
     @Override
-    public MctsDomainState performActionForCurrentAgent(TicTacToeAction action) {
-        if (getAvailableActionsForCurrentAgent().contains(action)) {
-            board[action.row][action.column] = currentPlayer;
-            selectNextPlayer();
-            return this;
+    public List<String> getAvailableActionsForCurrentAgent() {
+        List<String> availableActions = new ArrayList<>();
+        for (int row = 0; row < BOARD_ROWS; row++) {
+            List<String> availableActionsInRow = getAvailableActionsInBoardRow(board[row], row);
+            availableActions.addAll(availableActionsInRow);
         }
-        else
+        return availableActions;
+    }
+
+    private List<String> getAvailableActionsInBoardRow(char[] row, int rowIndex) {
+        List<String> availableActionsInRow = new ArrayList<>();
+        for (int columnIndex = 0; columnIndex < BOARD_COLUMNS; columnIndex++) {
+            if (row[columnIndex] == EMPTY_BOARD_POSITION) {
+                String action = generateActionFromRowColumn(rowIndex, columnIndex);
+                availableActionsInRow.add(action);
+            }
+        }
+        return availableActionsInRow;
+    }
+
+    private String generateActionFromRowColumn(int row, int column) {
+        return Integer.toString(row) + ACTION_DELIMITER + Integer.toString(column);
+    }
+
+    @Override
+    public MctsDomainState performActionForCurrentAgent(String action) {
+        validateIsValidAction(action);
+        applyActionOnBoard(action);
+        selectNextPlayer();
+        return this;
+    }
+
+    private void validateIsValidAction(String action) {
+        if (!getAvailableActionsForCurrentAgent().contains(action)) {
             throw new IllegalArgumentException("Invalid action passed as function parameter");
+        }
+    }
+
+    private void applyActionOnBoard(String action) {
+        int row = getRowFromAction(action);
+        int column = getColumnFromAction(action);
+        board[row][column] = currentPlayer;
+    }
+
+    private int getRowFromAction(String action) {
+        String row = action.split(ACTION_DELIMITER)[ACTION_ROW_POSITION];
+        return Integer.parseInt(row);
+    }
+
+    private int getColumnFromAction(String action) {
+        String column = action.split(ACTION_DELIMITER)[ACTION_COLUMN_POSITION];
+        return Integer.parseInt(column);
     }
 
     private void selectNextPlayer() {
-        if (currentPlayer == NOUGHT_PLAYER)
-            currentPlayer = CROSS_PLAYER;
-        else
-            currentPlayer = NOUGHT_PLAYER;
+        switch (currentPlayer){
+            case NOUGHT_PLAYER:
+                currentPlayer = CROSS_PLAYER;
+            case CROSS_PLAYER:
+                currentPlayer = NOUGHT_PLAYER;
+        }
     }
 }
