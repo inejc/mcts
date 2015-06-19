@@ -10,9 +10,6 @@ import static org.junit.Assert.*;
 
 public class TicTacToeStateTest {
 
-    private static final char NOUGHT_PLAYER = 'O';
-    private static final char CROSS_PLAYER = 'X';
-
     private static final char[][] NON_TERMINAL_BOARD = new char[][] {
         {'X', '-', 'O'},
         {'-', 'O', '-'},
@@ -78,35 +75,35 @@ public class TicTacToeStateTest {
     @Test
     public void testBoardContainsPlayersFullRow() {
         state.setBoard(CROSS_WON_ROW_BOARD1);
-        assertTrue(state.boardContainsPlayersFullRow(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullRow(state.getCrossPlayer()));
         state.setBoard(CROSS_WON_ROW_BOARD2);
-        assertTrue(state.boardContainsPlayersFullRow(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullRow(state.getCrossPlayer()));
         state.setBoard(CROSS_WON_ROW_BOARD3);
-        assertTrue(state.boardContainsPlayersFullRow(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullRow(state.getCrossPlayer()));
         state.setBoard(NON_TERMINAL_BOARD);
-        assertFalse(state.boardContainsPlayersFullRow(CROSS_PLAYER));
+        assertFalse(state.boardContainsPlayersFullRow(state.getCrossPlayer()));
     }
 
     @Test
     public void testBoardContainsPlayersFullColumn() {
         state.setBoard(CROSS_WON_COLUMN_BOARD1);
-        assertTrue(state.boardContainsPlayersFullColumn(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullColumn(state.getCrossPlayer()));
         state.setBoard(CROSS_WON_COLUMN_BOARD2);
-        assertTrue(state.boardContainsPlayersFullColumn(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullColumn(state.getCrossPlayer()));
         state.setBoard(CROSS_WON_COLUMN_BOARD3);
-        assertTrue(state.boardContainsPlayersFullColumn(CROSS_PLAYER));
+        assertTrue(state.boardContainsPlayersFullColumn(state.getCrossPlayer()));
         state.setBoard(NON_TERMINAL_BOARD);
-        assertFalse(state.boardContainsPlayersFullColumn(CROSS_PLAYER));
+        assertFalse(state.boardContainsPlayersFullColumn(state.getCrossPlayer()));
     }
 
     @Test
     public void testBoardContainsPlayersFullDiagonal() {
         state.setBoard(NOUGHT_WON_DIAGONAL_BOARD1);
-        assertTrue(state.boardContainsPlayersFullDiagonal(NOUGHT_PLAYER));
+        assertTrue(state.boardContainsPlayersFullDiagonal(state.getNoughtPlayer()));
         state.setBoard(NOUGHT_WON_DIAGONAL_BOARD2);
-        assertTrue(state.boardContainsPlayersFullDiagonal(NOUGHT_PLAYER));
+        assertTrue(state.boardContainsPlayersFullDiagonal(state.getNoughtPlayer()));
         state.setBoard(NON_TERMINAL_BOARD);
-        assertFalse(state.boardContainsPlayersFullDiagonal(NOUGHT_PLAYER));
+        assertFalse(state.boardContainsPlayersFullDiagonal(state.getNoughtPlayer()));
     }
 
     @Test
