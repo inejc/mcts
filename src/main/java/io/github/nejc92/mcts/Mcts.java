@@ -3,9 +3,9 @@ package io.github.nejc92.mcts;
 import java.util.Collections;
 import java.util.List;
 
-public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, AgentT extends MctsDomainAgent<StateT>> {
+public class Mcts<ActionT, StateT extends MctsDomainState<ActionT>, AgentT extends MctsDomainAgent<StateT>> {
 
-    private static final int FIRST_ELEMENT = 0;
+    private static final int FIRST_RANDOM_ACTION = 0;
 
     private int numberOfIterations;
 
@@ -13,21 +13,21 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, AgentT exten
         this.numberOfIterations = numberOfIterations;
     }
 
-    public ActionT uctSearch(StateT state, double explorationParameter, AgentT invokingAgent) {
-        MctsTreeNode<StateT, ActionT> rootNode = MctsTreeNode.createRootNode(state, explorationParameter);
+    public ActionT uctSearch(StateT state, double explorationParameter, AgentT agentInvoking) {
+        MctsTreeNode<ActionT, StateT> rootNode = MctsTreeNode.createRootNode(state, explorationParameter);
         for (int i = 0; i < numberOfIterations; i++) {
-            performOneMctsIteration(rootNode, invokingAgent);
+            performOneMctsIteration(rootNode, agentInvoking);
         }
         return rootNode.getMostPromisingAction();
     }
 
-    private void performOneMctsIteration(MctsTreeNode<StateT, ActionT> rootNode, AgentT invokingAgent) {
-        MctsTreeNode<StateT, ActionT> selectedChildNode = treePolicy(rootNode);
-        double reward = getRewardFromDefaultPolicy(selectedChildNode, invokingAgent);
+    private void performOneMctsIteration(MctsTreeNode<ActionT, StateT> rootNode, AgentT agentInvoking) {
+        MctsTreeNode<ActionT, StateT> selectedChildNode = treePolicy(rootNode);
+        double reward = getRewardFromDefaultPolicy(selectedChildNode, agentInvoking);
         backPropagate(selectedChildNode, reward);
     }
 
-    private MctsTreeNode<StateT, ActionT> treePolicy(MctsTreeNode<StateT, ActionT> treeNode) {
+    private MctsTreeNode<ActionT, StateT> treePolicy(MctsTreeNode<ActionT, StateT> treeNode) {
         while (!treeNode.representsTerminalState()) {
             if (!treeNode.isFullyExpanded())
                 return expand(treeNode);
@@ -37,7 +37,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, AgentT exten
         return treeNode;
     }
 
-    private MctsTreeNode<StateT, ActionT> expand(MctsTreeNode<StateT, ActionT> treeNode) {
+    private MctsTreeNode<ActionT, StateT> expand(MctsTreeNode<ActionT, StateT> treeNode) {
         List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
         ActionT randomUntriedAction = getRandomActionFrom(untriedActions);
         return treeNode.addNewChildFromAction(randomUntriedAction);
@@ -45,15 +45,15 @@ public class Mcts<StateT extends MctsDomainState<ActionT>, ActionT, AgentT exten
 
     private ActionT getRandomActionFrom(List<ActionT> actions) {
         Collections.shuffle(actions);
-        return actions.get(FIRST_ELEMENT);
+        return actions.get(FIRST_RANDOM_ACTION);
     }
 
-    private double getRewardFromDefaultPolicy(MctsTreeNode<StateT, ActionT> treeNode, AgentT invokingAgent) {
+    private double getRewardFromDefaultPolicy(MctsTreeNode<ActionT, StateT> treeNode, AgentT agentInvoking) {
         StateT treeNodesStateClone = treeNode.getDeepCloneOfRepresentedState();
-        return invokingAgent.getRewardByPerformingSimulationFromState(treeNodesStateClone);
+        return agentInvoking.getRewardByPerformingSimulationFromState(treeNodesStateClone);
     }
 
-    private void backPropagate(MctsTreeNode<StateT, ActionT> treeNode, double simulationResult) {
+    private void backPropagate(MctsTreeNode<ActionT, StateT> treeNode, double simulationResult) {
         while (treeNode != null) {
             treeNode.updateDomainTheoreticValue(simulationResult);
             treeNode = treeNode.getParentNode();
