@@ -15,7 +15,7 @@ public class TicTacToeState implements MctsDomainState<String> {
     private static final int BOARD_COLUMNS = 3;
     private static final int ACTION_ROW_POSITION = 0;
     private static final int ACTION_COLUMN_POSITION = 1;
-    private static final String ACTION_DELIMITER = "-";
+    private static final String ACTION_PARSING_DELIMITER = "-";
 
     private char[][] board;
     private char currentPlayer;
@@ -135,7 +135,7 @@ public class TicTacToeState implements MctsDomainState<String> {
     }
 
     private String generateActionFromRowColumn(int row, int column) {
-        return Integer.toString(row) + ACTION_DELIMITER + Integer.toString(column);
+        return Integer.toString(row) + ACTION_PARSING_DELIMITER + Integer.toString(column);
     }
 
     @Override
@@ -159,12 +159,12 @@ public class TicTacToeState implements MctsDomainState<String> {
     }
 
     private int getRowFromAction(String action) {
-        String row = action.split(ACTION_DELIMITER)[ACTION_ROW_POSITION];
+        String row = action.split(ACTION_PARSING_DELIMITER)[ACTION_ROW_POSITION];
         return Integer.parseInt(row);
     }
 
     private int getColumnFromAction(String action) {
-        String column = action.split(ACTION_DELIMITER)[ACTION_COLUMN_POSITION];
+        String column = action.split(ACTION_PARSING_DELIMITER)[ACTION_COLUMN_POSITION];
         return Integer.parseInt(column);
     }
 
