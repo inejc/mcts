@@ -38,14 +38,14 @@ public class Mcts<ActionT, StateT extends MctsDomainState<ActionT>, AgentT exten
     }
 
     private MctsTreeNode<ActionT, StateT> expand(MctsTreeNode<ActionT, StateT> treeNode) {
-        List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
-        ActionT randomUntriedAction = getRandomActionFrom(untriedActions);
+        ActionT randomUntriedAction = getRandomActionFromNodesUntriedActions(treeNode);
         return treeNode.addNewChildFromAction(randomUntriedAction);
     }
 
-    private ActionT getRandomActionFrom(List<ActionT> actions) {
-        Collections.shuffle(actions);
-        return actions.get(FIRST_RANDOM_ACTION);
+    private ActionT getRandomActionFromNodesUntriedActions(MctsTreeNode<ActionT, StateT> treeNode) {
+        List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
+        Collections.shuffle(untriedActions);
+        return untriedActions.get(FIRST_RANDOM_ACTION);
     }
 
     private double getRewardFromDefaultPolicy(MctsTreeNode<ActionT, StateT> treeNode, AgentT agentInvoking) {

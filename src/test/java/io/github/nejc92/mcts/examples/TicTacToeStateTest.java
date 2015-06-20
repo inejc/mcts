@@ -130,7 +130,7 @@ public class TicTacToeStateTest {
     public void testGetAvailableActionsForCurrentAgent() {
         state.setBoard(NON_TERMINAL_BOARD);
         List<String> expectedAvailableActions = new ArrayList<>(Arrays.asList(
-                "0-1", "1-0", "1-2", "2-2"
+                "01", "10", "12", "22"
         ));
         assertEquals(expectedAvailableActions, state.getAvailableActionsForCurrentAgent());
     }
@@ -143,13 +143,13 @@ public class TicTacToeStateTest {
             {'-', 'O', '-'},
             {'X', 'X', '-'}
         };
-        state.performActionForCurrentAgent("0-1");
+        state.performActionForCurrentAgent("01");
         assertArrayEquals(expectedBoard, state.getBoard());
     }
 
     @Test(expected= IllegalArgumentException.class)
     public void testPerformInvalidActionForCurrentAgent() {
         state.setBoard(NON_TERMINAL_BOARD);
-        state.performActionForCurrentAgent("0-2");
+        state.performActionForCurrentAgent("02");
     }
 }
