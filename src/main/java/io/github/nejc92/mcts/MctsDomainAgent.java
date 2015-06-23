@@ -2,5 +2,6 @@ package io.github.nejc92.mcts;
 
 public interface MctsDomainAgent<StateT extends MctsDomainState> {
 
-    double getRewardByPerformingSimulationFromState(StateT state);
+    StateT getTerminalStateByPerformingSimulationFromState(StateT state);
+    double getRewardFromTerminalState(StateT terminalState);
 }

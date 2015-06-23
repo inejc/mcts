@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TicTacToeState implements MctsDomainState<String> {
+public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> {
 
     private static final int BOARD_SIZE = 3;
     private static final char EMPTY_BOARD_POSITION = '-';
@@ -14,22 +14,28 @@ public class TicTacToeState implements MctsDomainState<String> {
     private static final int ACTION_COLUMN_POSITION = 1;
 
     private char[][] board;
-    private TicTacToePlayer player1;
-    private TicTacToePlayer player2;
-    private TicTacToePlayer currentPlayer;
+    private TicTacToePlayer[] players;
+    private int currentPlayerIndex;
 
-    public TicTacToeState(TicTacToePlayer playerToBegin, TicTacToePlayer secondPlayer) {
+    public TicTacToeState(int currentPlayerIndex) {
         board = new char[BOARD_SIZE][BOARD_SIZE];
         initializeEmptyBoard();
-        currentPlayer = playerToBegin;
-        player1 = currentPlayer;
-        player2 = secondPlayer;
+        initializePlayers();
+        if (!(currentPlayerIndex == 0 || currentPlayerIndex == 1))
+            throw new IllegalArgumentException("Invalid current player index passed as argument");
+        this.currentPlayerIndex = currentPlayerIndex;
     }
 
     private void initializeEmptyBoard() {
         for (int row = 0; row < BOARD_SIZE; row++) {
             Arrays.fill(board[row], EMPTY_BOARD_POSITION);
         }
+    }
+
+    private void initializePlayers() {
+        players = new TicTacToePlayer[2];
+        players[0] = new TicTacToePlayer('O');
+        players[1] = new TicTacToePlayer('X');
     }
 
     public void printBoard() {
@@ -51,7 +57,7 @@ public class TicTacToeState implements MctsDomainState<String> {
     }
 
     public TicTacToePlayer getCurrentPlayer() {
-        return currentPlayer;
+        return players[currentPlayerIndex];
     }
 
     @Override
@@ -78,7 +84,8 @@ public class TicTacToeState implements MctsDomainState<String> {
     }
 
     private boolean somePlayerWon() {
-        return specificPlayerWon(player1) || specificPlayerWon(player2);
+        return specificPlayerWon(players[currentPlayerIndex])
+                || specificPlayerWon(players[2 - currentPlayerIndex - 1]);
     }
 
     protected boolean specificPlayerWon(TicTacToePlayer player) {
@@ -183,7 +190,7 @@ public class TicTacToeState implements MctsDomainState<String> {
     private void applyActionOnBoard(String action) {
         int row = getRowFromAction(action);
         int column = getColumnFromAction(action);
-        board[row][column] = currentPlayer.boardPositionMarker;
+        board[row][column] = players[currentPlayerIndex].boardPositionMarker;
     }
 
     private int getRowFromAction(String action) {
@@ -197,9 +204,11 @@ public class TicTacToeState implements MctsDomainState<String> {
     }
 
     private void selectNextPlayer() {
-        if (currentPlayer == player1)
-            currentPlayer = player2;
-        else
-            currentPlayer = player1;
+        currentPlayerIndex = 2 - currentPlayerIndex - 1;
+    }
+
+    @Override
+    public TicTacToePlayer getPreviousAgent() {
+        return players[2 - currentPlayerIndex - 1];
     }
 }
