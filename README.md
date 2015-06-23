@@ -7,7 +7,7 @@ JUnit4, Java cloning library
 ## Usage
 Create the implementation of MctsDomainState.
 ```java
-public class GameState implements MctsDomainState<Action> {...}
+public class GameState implements MctsDomainState<Action, Player> {...}
 ```
 Create the implementation of MctsDomainAgent.
 ```java

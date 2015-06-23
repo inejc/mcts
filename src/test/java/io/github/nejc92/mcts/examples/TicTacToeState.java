@@ -21,8 +21,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         board = new char[BOARD_SIZE][BOARD_SIZE];
         initializeEmptyBoard();
         initializePlayers();
-        if (!(currentPlayerIndex == 0 || currentPlayerIndex == 1))
-            throw new IllegalArgumentException("Invalid current player index passed as argument");
+        validateIsValidPlayerIndex(currentPlayerIndex);
         this.currentPlayerIndex = currentPlayerIndex;
     }
 
@@ -38,26 +37,9 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         players[1] = new TicTacToePlayer('X');
     }
 
-    public void printBoard() {
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            for (int column = 0; column < BOARD_SIZE; column++) {
-                System.out.print(board[row][column] + " ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    protected void setBoard(char[][] board) {
-        this.board = board;
-    }
-
-    protected char[][] getBoard() {
-        return board;
-    }
-
-    public TicTacToePlayer getCurrentPlayer() {
-        return players[currentPlayerIndex];
+    private void validateIsValidPlayerIndex(int currentPlayerIndex) {
+        if (!(currentPlayerIndex == 0 || currentPlayerIndex == 1))
+            throw new IllegalArgumentException("Invalid current player index passed as function parameter");
     }
 
     @Override
@@ -65,7 +47,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         return isDraw() || somePlayerWon();
     }
 
-    protected boolean isDraw() {
+    public boolean isDraw() {
         if (somePlayerWon())
             return false;
         for (int row = 0; row < BOARD_SIZE; row++) {
@@ -88,13 +70,13 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
                 || specificPlayerWon(players[2 - currentPlayerIndex - 1]);
     }
 
-    protected boolean specificPlayerWon(TicTacToePlayer player) {
+    public boolean specificPlayerWon(TicTacToePlayer player) {
         return boardContainsPlayersFullRow(player)
                 || boardContainsPlayersFullColumn(player)
                 || boardContainsPlayersFullDiagonal(player);
     }
 
-    protected boolean boardContainsPlayersFullRow(TicTacToePlayer player) {
+    private boolean boardContainsPlayersFullRow(TicTacToePlayer player) {
         for (int row = 0; row < BOARD_SIZE; row++) {
             if (board[row][0] == player.boardPositionMarker
                     && board[row][1] == player.boardPositionMarker
@@ -104,7 +86,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         return false;
     }
 
-    protected boolean boardContainsPlayersFullColumn(TicTacToePlayer player) {
+    private boolean boardContainsPlayersFullColumn(TicTacToePlayer player) {
         for (int column = 0; column < BOARD_SIZE; column++) {
             if (board[0][column] == player.boardPositionMarker
                     && board[1][column] == player.boardPositionMarker
@@ -114,7 +96,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         return false;
     }
 
-    protected boolean boardContainsPlayersFullDiagonal(TicTacToePlayer player) {
+    private boolean boardContainsPlayersFullDiagonal(TicTacToePlayer player) {
         return boardContainsPlayersFullAscendingDiagonal(player)
                 || boardContainsPlayersFullDescendingDiagonal(player);
     }
@@ -173,14 +155,6 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         return this;
     }
 
-    public MctsDomainState undoAction(String action) {
-        int row = getRowFromAction(action);
-        int column = getColumnFromAction(action);
-        board[row][column] = EMPTY_BOARD_POSITION;
-        selectNextPlayer();
-        return this;
-    }
-
     private void validateIsValidAction(String action) {
         if (!getAvailableActionsForCurrentAgent().contains(action)) {
             throw new IllegalArgumentException("Invalid action passed as function parameter");
@@ -191,6 +165,26 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         int row = getRowFromAction(action);
         int column = getColumnFromAction(action);
         board[row][column] = players[currentPlayerIndex].boardPositionMarker;
+    }
+
+    public MctsDomainState undoAction(String action) {
+        validateIsValidUndoAction(action);
+        applyUndoActionOnBoard(action);
+        selectNextPlayer();
+        return this;
+    }
+
+    private void validateIsValidUndoAction(String action) {
+        int row = getRowFromAction(action);
+        int column = getColumnFromAction(action);
+        if (!(-1 < row && row < 3) && !(-1 < column && column < 3))
+            throw new IllegalArgumentException("Invalid action passed as function parameter");
+    }
+
+    private void applyUndoActionOnBoard(String action) {
+        int row = getRowFromAction(action);
+        int column = getColumnFromAction(action);
+        board[row][column] = EMPTY_BOARD_POSITION;
     }
 
     private int getRowFromAction(String action) {
@@ -210,5 +204,9 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     @Override
     public TicTacToePlayer getPreviousAgent() {
         return players[2 - currentPlayerIndex - 1];
+    }
+
+    public TicTacToePlayer getCurrentPlayer() {
+        return players[currentPlayerIndex];
     }
 }
