@@ -5,13 +5,13 @@ This is a Java implementation of Monte Carlo Tree Search method for the hide-and
 JUnit4, Java cloning library
 
 ## Usage
-Create the implementation of MctsDomainState.
-```java
-public class GameState implements MctsDomainState<Action, Player> {...}
-```
 Create the implementation of MctsDomainAgent.
 ```java
 public class Player implements MctsDomainAgent<GameState> {...}
+```
+Create the implementation of MctsDomainState.
+```java
+public class GameState implements MctsDomainState<Action, Player> {...}
 ```
 Create an instance of Mcts object and invoke uctSearch() to get the most promising action.
 ```java
