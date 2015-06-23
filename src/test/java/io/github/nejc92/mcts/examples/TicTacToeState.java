@@ -118,6 +118,11 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     }
 
     @Override
+    public TicTacToePlayer getCurrentAgent() {
+        return players[currentPlayerIndex];
+    }
+
+    @Override
     public int getNumberOfAvailableActionsForCurrentAgent() {
         return getAvailableActionsForCurrentAgent().size();
     }
@@ -204,9 +209,5 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     @Override
     public TicTacToePlayer getPreviousAgent() {
         return players[2 - currentPlayerIndex - 1];
-    }
-
-    public TicTacToePlayer getCurrentPlayer() {
-        return players[currentPlayerIndex];
     }
 }

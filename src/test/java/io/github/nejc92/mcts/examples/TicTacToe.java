@@ -23,7 +23,7 @@ public class TicTacToe {
     private static void playOneTicTacToeGame() {
         state = new TicTacToeState(currentPlayerIndex);
         while (!state.isTerminal()) {
-            String nextAction = mcts.uctSearch(state, state.getCurrentPlayer(), EXPLORATION_PARAMETER);
+            String nextAction = mcts.uctSearch(state, EXPLORATION_PARAMETER);
             state.performActionForCurrentAgent(nextAction);
         }
         switchPlayerOrder();
