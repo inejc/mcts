@@ -22,7 +22,8 @@ Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 Examples can be found in the test directory.
 
 ##### Important
-Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
+- Because of comparison state's method getAvailableActionsForCurrentAgent() must always either return the same instances of objects or return objects that override equals and hashCode methods.
+- Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
 
 ## License
 This project is licensed under the terms of the MIT license. See LICENSE.md.
