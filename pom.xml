@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.nejc92</groupId>
-    <artifactId>mcts-sy</artifactId>
+    <artifactId>mcts</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <name>Monte Carlo Tree Search for the Scotland Yard board game</name>
-    <url>https://github.com/nejc92/mcts-sy</url>
+    <name>Monte Carlo Tree Search methods</name>
+    <url>https://github.com/nejc92/mcts</url>
 
     <dependencies>
         <dependency>
