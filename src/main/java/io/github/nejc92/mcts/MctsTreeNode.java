@@ -19,7 +19,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
     private List<MctsTreeNode<ActionT, StateT, AgentT>> childNodes;
     private Cloner cloner;
 
-    public static<ActionT, StateT extends MctsDomainState<ActionT, AgentT>, AgentT extends MctsDomainAgent>
+    protected static<ActionT, StateT extends MctsDomainState<ActionT, AgentT>, AgentT extends MctsDomainAgent>
             MctsTreeNode<ActionT, StateT, AgentT> createRootNode(
                 StateT representedState, double explorationParameter) {
         Cloner cloner = new Cloner();
@@ -38,7 +38,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
         this.cloner = cloner;
     }
 
-    public MctsTreeNode<ActionT, StateT, AgentT> getParentNode() {
+    protected MctsTreeNode<ActionT, StateT, AgentT> getParentNode() {
         return parentNode;
     }
 
@@ -50,15 +50,15 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
         return visitCount;
     }
 
-    public boolean representsTerminalState() {
+    protected boolean representsTerminalState() {
         return representedState.isTerminal();
     }
 
-    public AgentT getRepresentedStatesPreviousAgent() {
+    protected AgentT getRepresentedStatesPreviousAgent() {
         return representedState.getPreviousAgent();
     }
 
-    public MctsTreeNode<ActionT, StateT, AgentT> addNewChildFromAction(ActionT action) {
+    protected MctsTreeNode<ActionT, StateT, AgentT> addNewChildFromAction(ActionT action) {
         if (!isUntriedAction(action))
             throw new IllegalArgumentException("Invalid action passed as function parameter");
         else
@@ -69,7 +69,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
         return getUntriedActionsForCurrentAgent().contains(action);
     }
 
-    public List<ActionT> getUntriedActionsForCurrentAgent() {
+    protected List<ActionT> getUntriedActionsForCurrentAgent() {
         List<ActionT> availableActions = representedState.getAvailableActionsForCurrentAgent();
         List<ActionT> untriedActions = new ArrayList<>(availableActions);
         List<ActionT> triedActions = getTriedActionsForCurrentAgent();
@@ -94,7 +94,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
         return representedStateClone;
     }
 
-    public StateT getDeepCloneOfRepresentedState() {
+    protected StateT getDeepCloneOfRepresentedState() {
         return cloner.deepClone(representedState);
     }
 
@@ -106,14 +106,14 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
         return childNode;
     }
 
-    public ActionT getMostPromisingAction() {
+    protected ActionT getMostPromisingAction() {
         validateBestChildComputable();
         MctsTreeNode<ActionT, StateT, AgentT> bestChildWithoutExploration =
                 getBestChildConfidentlyWithExploration(NO_EXPLORATION);
         return bestChildWithoutExploration.getIncomingAction();
     }
 
-    public MctsTreeNode<ActionT, StateT, AgentT> getBestChild() {
+    protected MctsTreeNode<ActionT, StateT, AgentT> getBestChild() {
         validateBestChildComputable();
         return getBestChildConfidentlyWithExploration(explorationParameter);
     }
@@ -125,7 +125,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
             throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
     }
 
-    public boolean isFullyExpanded() {
+    protected boolean isFullyExpanded() {
         return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
     }
 
@@ -150,7 +150,7 @@ public class MctsTreeNode<ActionT, StateT extends MctsDomainState<ActionT, Agent
                + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
     }
 
-    public void updateDomainTheoreticValue(double rewardAddend) {
+    protected void updateDomainTheoreticValue(double rewardAddend) {
         visitCount += 1;
         totalReward += rewardAddend;
     }

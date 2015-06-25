@@ -11,6 +11,10 @@ public class TicTacToePlayer implements MctsDomainAgent<TicTacToeState> {
 
     public char boardPositionMarker;
 
+    public enum Type {
+        NOUGHT, CROSS
+    }
+
     public TicTacToePlayer(char boardPositionMarker) {
         this.boardPositionMarker = boardPositionMarker;
     }

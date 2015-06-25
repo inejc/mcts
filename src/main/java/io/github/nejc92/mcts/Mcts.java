@@ -57,19 +57,14 @@ public class Mcts<ActionT, StateT extends MctsDomainState<ActionT, AgentT>, Agen
     private void backPropagate(MctsTreeNode<ActionT, StateT, AgentT> treeNode, StateT terminalState) {
         while (treeNode != null) {
             double reward = calculateStatesRewardForNode(terminalState, treeNode);
-            treeNode = updateThisLevelsTreeNode(treeNode, reward);
+            treeNode.updateDomainTheoreticValue(reward);
+            treeNode = treeNode.getParentNode();
         }
     }
 
     private double calculateStatesRewardForNode(StateT terminalState, MctsTreeNode<ActionT, StateT, AgentT> treeNode) {
         // todo: don't violate law of Demeter
-        AgentT treeNodesRepresentedStatesPreviousAgent = treeNode.getRepresentedStatesPreviousAgent();
-        return treeNodesRepresentedStatesPreviousAgent.getRewardFromTerminalState(terminalState);
-    }
-
-    private MctsTreeNode<ActionT, StateT, AgentT> updateThisLevelsTreeNode(
-            MctsTreeNode<ActionT, StateT, AgentT> treeNode, double reward) {
-        treeNode.updateDomainTheoreticValue(reward);
-        return treeNode.getParentNode();
+        AgentT representedStatesPreviousAgent = treeNode.getRepresentedStatesPreviousAgent();
+        return representedStatesPreviousAgent.getRewardFromTerminalState(terminalState);
     }
 }

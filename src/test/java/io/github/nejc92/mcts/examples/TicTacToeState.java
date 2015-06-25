@@ -17,12 +17,11 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     private TicTacToePlayer[] players;
     private int currentPlayerIndex;
 
-    public TicTacToeState(int currentPlayerIndex) {
+    public TicTacToeState(TicTacToePlayer.Type playerToBegin) {
         board = new char[BOARD_SIZE][BOARD_SIZE];
         initializeEmptyBoard();
         initializePlayers();
-        validateIsValidPlayerIndex(currentPlayerIndex);
-        this.currentPlayerIndex = currentPlayerIndex;
+        setPlayerToBegin(playerToBegin);
     }
 
     private void initializeEmptyBoard() {
@@ -37,9 +36,22 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         players[1] = new TicTacToePlayer('X');
     }
 
-    private void validateIsValidPlayerIndex(int currentPlayerIndex) {
-        if (!(currentPlayerIndex == 0 || currentPlayerIndex == 1))
-            throw new IllegalArgumentException("Invalid current player index passed as function parameter");
+    private void setPlayerToBegin(TicTacToePlayer.Type playerToBegin) {
+        switch (playerToBegin) {
+            case NOUGHT:
+                currentPlayerIndex = 0;
+                break;
+            case CROSS:
+                currentPlayerIndex = 1;
+        }
+    }
+
+    protected void setBoard(char[][] board) {
+        this.board = board;
+    }
+
+    protected char[][] getBoard() {
+        return board;
     }
 
     @Override
@@ -70,7 +82,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
                 || specificPlayerWon(players[2 - currentPlayerIndex - 1]);
     }
 
-    public boolean specificPlayerWon(TicTacToePlayer player) {
+    protected boolean specificPlayerWon(TicTacToePlayer player) {
         return boardContainsPlayersFullRow(player)
                 || boardContainsPlayersFullColumn(player)
                 || boardContainsPlayersFullDiagonal(player);
@@ -172,7 +184,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         board[row][column] = players[currentPlayerIndex].boardPositionMarker;
     }
 
-    public MctsDomainState undoAction(String action) {
+    protected MctsDomainState undoAction(String action) {
         validateIsValidUndoAction(action);
         applyUndoActionOnBoard(action);
         selectNextPlayer();
