@@ -17,7 +17,7 @@ public class MctsTreeNodeTest {
 
     private List<String> allPossibleActions;
     private List<String> availableActions;
-    private MctsTreeNode<String, StaticState, TicTacToePlayer> rootNode;
+    private MctsTreeNode<StaticState, String, TicTacToePlayer> rootNode;
     private StaticState state;
 
     @Before
@@ -46,7 +46,7 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testAddNewChildFromValidAction() {
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child = rootNode.addNewChildFromAction(allPossibleActions.get(0));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child = rootNode.addNewChildFromAction(allPossibleActions.get(0));
         assertEquals(rootNode, child.getParentNode());
     }
 
@@ -72,8 +72,8 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testGetBestChildWithLessVisitsLessReward() {
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
         for (int i = 0; i < 20; i++) {
             rootNode.updateDomainTheoreticValue(0);
             if (i < 5) child0.updateDomainTheoreticValue(0.1); // visitCount:  5, totalReward: 0.5
@@ -84,8 +84,8 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testGetBestChildWithLessVisitsMoreReward() {
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
         for (int i = 0; i < 20; i++) {
             rootNode.updateDomainTheoreticValue(0);
             if (i < 5) child0.updateDomainTheoreticValue(0.5); // visitCount:  5, totalReward: 2.5
@@ -96,8 +96,8 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testGetBestChildWithSameVisitsLessReward() {
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
         for (int i = 0; i < 21; i++) {
             rootNode.updateDomainTheoreticValue(0);
             child0.updateDomainTheoreticValue(0.01); // visitCount: 20, totalReward: 0.2
@@ -108,8 +108,8 @@ public class MctsTreeNodeTest {
 
     @Test
     public void testGetMostPromisingAction() {
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
-        MctsTreeNode<String, StaticState, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child0 = rootNode.addNewChildFromAction(availableActions.get(0));
+        MctsTreeNode<StaticState, String, TicTacToePlayer> child1 = rootNode.addNewChildFromAction(availableActions.get(1));
         for (int i = 0; i < 20; i++) {
             rootNode.updateDomainTheoreticValue(0);
             if (i < 3) child0.updateDomainTheoreticValue(0.1); // visitCount:  3, totalReward: 0.3

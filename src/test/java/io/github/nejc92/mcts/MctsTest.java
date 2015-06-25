@@ -2,10 +2,9 @@ package io.github.nejc92.mcts;
 
 import io.github.nejc92.mcts.examples.TicTacToePlayer;
 import io.github.nejc92.mcts.examples.TicTacToeState;
-
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class MctsTest {
 
@@ -13,7 +12,7 @@ public class MctsTest {
     private static final int NUMBER_OF_GAMES = 100;
     private static final double EXPLORATION_PARAMETER = 0.4;
 
-    private Mcts<String, TicTacToeState, TicTacToePlayer> mcts = new Mcts<>(NUMBER_OF_ITERATIONS);
+    private Mcts<TicTacToeState, String, TicTacToePlayer> mcts = new Mcts<>(NUMBER_OF_ITERATIONS);
     private TicTacToePlayer.Type playerToBegin = TicTacToePlayer.Type.NOUGHT;
 
     @Test
