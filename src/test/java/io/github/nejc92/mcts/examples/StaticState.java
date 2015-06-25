@@ -23,6 +23,11 @@ public class StaticState implements MctsDomainState<String, TicTacToePlayer> {
     }
 
     @Override
+    public TicTacToePlayer getPreviousAgent() {
+        return null;
+    }
+
+    @Override
     public int getNumberOfAvailableActionsForCurrentAgent() {
         return getAvailableActionsForCurrentAgent().size();
     }
@@ -35,10 +40,5 @@ public class StaticState implements MctsDomainState<String, TicTacToePlayer> {
     @Override
     public MctsDomainState performActionForCurrentAgent(String action) {
         return this;
-    }
-
-    @Override
-    public TicTacToePlayer getPreviousAgent() {
-        return null;
     }
 }

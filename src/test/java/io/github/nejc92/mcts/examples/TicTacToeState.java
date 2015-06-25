@@ -16,6 +16,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     private char[][] board;
     private TicTacToePlayer[] players;
     private int currentPlayerIndex;
+    private int previousPlayerIndex;
 
     public TicTacToeState(TicTacToePlayer.Type playerToBegin) {
         board = new char[BOARD_SIZE][BOARD_SIZE];
@@ -40,9 +41,11 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         switch (playerToBegin) {
             case NOUGHT:
                 currentPlayerIndex = 0;
+                previousPlayerIndex = 1;
                 break;
             case CROSS:
                 currentPlayerIndex = 1;
+                previousPlayerIndex = 0;
         }
     }
 
@@ -79,7 +82,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
 
     private boolean somePlayerWon() {
         return specificPlayerWon(players[currentPlayerIndex])
-                || specificPlayerWon(players[2 - currentPlayerIndex - 1]);
+                || specificPlayerWon(players[previousPlayerIndex]);
     }
 
     protected boolean specificPlayerWon(TicTacToePlayer player) {
@@ -135,6 +138,11 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     }
 
     @Override
+    public TicTacToePlayer getPreviousAgent() {
+        return players[previousPlayerIndex];
+    }
+
+    @Override
     public int getNumberOfAvailableActionsForCurrentAgent() {
         return getAvailableActionsForCurrentAgent().size();
     }
@@ -161,7 +169,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     }
 
     private String generateActionFromBoardPosition(int row, int column) {
-        return Integer.toString(row)  + Integer.toString(column);
+        return Integer.toString(row) + Integer.toString(column);
     }
 
     @Override
@@ -216,10 +224,6 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
 
     private void selectNextPlayer() {
         currentPlayerIndex = 2 - currentPlayerIndex - 1;
-    }
-
-    @Override
-    public TicTacToePlayer getPreviousAgent() {
-        return players[2 - currentPlayerIndex - 1];
+        previousPlayerIndex = 2 - previousPlayerIndex - 1;
     }
 }
