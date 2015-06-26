@@ -19,7 +19,7 @@ Mcts<State, Action, Player> mcts = new Mcts<>(numberOfIterations);
 
 Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 ```
-Examples can be found in the test directory.
+Tic-Tac-Toe example can be found in the test directory and Scotland Yard board game example can be found [here](https://github.com/nejc92/scotland-yard).
 
 ##### Important
 - Because of comparison state's method getAvailableActionsForCurrentAgent() must always either return the same instances of objects or return objects that override equals() and hashCode() methods.
