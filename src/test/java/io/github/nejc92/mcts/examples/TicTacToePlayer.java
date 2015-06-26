@@ -7,16 +7,29 @@ import java.util.List;
 
 public class TicTacToePlayer implements MctsDomainAgent<TicTacToeState> {
 
-    private static final int FIRST_RANDOM_ACTION = 0;
-
-    public char boardPositionMarker;
+    private final char boardPositionMarker;
 
     public enum Type {
         NOUGHT, CROSS
     }
 
-    public TicTacToePlayer(char boardPositionMarker) {
+    public static TicTacToePlayer create(Type type) {
+        switch (type) {
+            case NOUGHT:
+                return new TicTacToePlayer('O');
+            case CROSS:
+                return new TicTacToePlayer('X');
+            default:
+                throw new IllegalArgumentException("Invalid player type passed as function parameter");
+        }
+    }
+
+    private TicTacToePlayer(char boardPositionMarker) {
         this.boardPositionMarker = boardPositionMarker;
+    }
+
+    public char getBoardPositionMarker() {
+        return boardPositionMarker;
     }
 
     @Override
@@ -46,7 +59,7 @@ public class TicTacToePlayer implements MctsDomainAgent<TicTacToeState> {
 
     private String getRandomActionFromActions(List<String> actions) {
         Collections.shuffle(actions);
-        return actions.get(FIRST_RANDOM_ACTION);
+        return actions.get(0);
     }
 
     @Override

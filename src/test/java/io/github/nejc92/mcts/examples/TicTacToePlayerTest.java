@@ -29,7 +29,7 @@ public class TicTacToePlayerTest {
 
     @Before
     public void setUp() {
-        state = new TicTacToeState(TicTacToePlayer.Type.NOUGHT);
+        state = TicTacToeState.initialize(TicTacToePlayer.Type.NOUGHT);
         noughtPlayer = state.getCurrentAgent();
         crossPlayer = state.getPreviousAgent();
     }

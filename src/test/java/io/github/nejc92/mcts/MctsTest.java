@@ -12,13 +12,13 @@ public class MctsTest {
     private static final int NUMBER_OF_GAMES = 100;
     private static final double EXPLORATION_PARAMETER = 0.4;
 
-    private Mcts<TicTacToeState, String, TicTacToePlayer> mcts = new Mcts<>(NUMBER_OF_ITERATIONS);
+    private final Mcts<TicTacToeState, String, TicTacToePlayer> mcts = new Mcts<>(NUMBER_OF_ITERATIONS);
     private TicTacToePlayer.Type playerToBegin = TicTacToePlayer.Type.NOUGHT;
 
     @Test
     public void testUctSearch() {
         for (int i = 0; i < NUMBER_OF_GAMES; i++) {
-            TicTacToeState state = new TicTacToeState(playerToBegin);
+            TicTacToeState state = TicTacToeState.initialize(playerToBegin);
             playOneTicTacToeGame(state);
             assertTrue(state.isDraw());
             switchPlayerOrder();

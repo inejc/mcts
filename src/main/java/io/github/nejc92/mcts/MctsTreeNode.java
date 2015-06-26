@@ -10,14 +10,14 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     private static final double NO_EXPLORATION = 0;
 
-    private MctsTreeNode<StateT, ActionT, AgentT> parentNode;
-    private ActionT incomingAction;
-    private StateT representedState;
+    private final MctsTreeNode<StateT, ActionT, AgentT> parentNode;
+    private final ActionT incomingAction;
+    private final StateT representedState;
     private int visitCount;
     private double totalReward;
-    private double explorationParameter;
+    private final double explorationParameter;
     private List<MctsTreeNode<StateT, ActionT, AgentT>> childNodes;
-    private Cloner cloner;
+    private final Cloner cloner;
 
     protected static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent>
             MctsTreeNode<StateT, ActionT, AgentT> createRootNode(

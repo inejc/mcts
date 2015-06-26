@@ -5,9 +5,7 @@ import java.util.List;
 
 public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>> {
 
-    private static final int FIRST_RANDOM_ACTION = 0;
-
-    private int numberOfIterations;
+    private final int numberOfIterations;
 
     public Mcts(int numberOfIterations) {
         this.numberOfIterations = numberOfIterations;
@@ -45,7 +43,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     private ActionT getRandomActionFromNodesUntriedActions(MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
         List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
         Collections.shuffle(untriedActions);
-        return untriedActions.get(FIRST_RANDOM_ACTION);
+        return untriedActions.get(0);
     }
 
     private StateT getTerminalStateFromDefaultPolicy(
