@@ -58,6 +58,7 @@ public class TicTacToePlayerTest {
     @Test
     public void testGetRewardFromTerminalStateDraw() {
         state.setBoard(DRAW_BOARD);
+        state.setCurrentRound(9);
         double reward = crossPlayer.getRewardFromTerminalState(state);
         assertEquals(DRAW_REWARD, reward, 0);
     }

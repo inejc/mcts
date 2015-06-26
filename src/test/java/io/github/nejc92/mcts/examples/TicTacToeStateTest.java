@@ -124,9 +124,8 @@ public class TicTacToeStateTest {
 
     @Test
     public void testIsDraw() {
+        state.setCurrentRound(9);
         state.setBoard(NOUGHT_WON_DIAGONAL_BOARD2);
-        assertFalse(state.isDraw());
-        state.setBoard(NON_TERMINAL_BOARD);
         assertFalse(state.isDraw());
         state.setBoard(DRAW_BOARD);
         assertTrue(state.isDraw());
@@ -139,6 +138,7 @@ public class TicTacToeStateTest {
         state.setBoard(NON_TERMINAL_BOARD);
         assertFalse(state.isTerminal());
         state.setBoard(NOUGHT_WON_DIAGONAL_BOARD2);
+        state.setCurrentRound(9);
         assertTrue(state.isTerminal());
         state.setBoard(DRAW_BOARD);
         assertTrue(state.isTerminal());

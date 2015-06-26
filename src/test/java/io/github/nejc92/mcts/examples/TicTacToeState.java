@@ -12,17 +12,20 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
     private static final char EMPTY_BOARD_POSITION = '-';
     private static final int ACTION_ROW_POSITION = 0;
     private static final int ACTION_COLUMN_POSITION = 1;
+    private static final int FINAL_ROUND = 9;
 
     private char[][] board;
     private TicTacToePlayer[] players;
     private int currentPlayerIndex;
     private int previousPlayerIndex;
+    private int currentRound;
 
     public TicTacToeState(TicTacToePlayer.Type playerToBegin) {
         board = new char[BOARD_SIZE][BOARD_SIZE];
         initializeEmptyBoard();
         initializePlayers();
         setPlayerToBegin(playerToBegin);
+        currentRound = 0;
     }
 
     private void initializeEmptyBoard() {
@@ -57,27 +60,17 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         return board;
     }
 
+    protected void setCurrentRound(int round) {
+        this.currentRound = round;
+    }
+
     @Override
     public boolean isTerminal() {
-        return isDraw() || somePlayerWon();
+        return somePlayerWon() || isDraw();
     }
 
     public boolean isDraw() {
-        if (somePlayerWon())
-            return false;
-        for (int row = 0; row < BOARD_SIZE; row++) {
-            if (boardRowContainsEmptyPosition(board[row]))
-                return false;
-        }
-        return true;
-    }
-
-    private boolean boardRowContainsEmptyPosition(char[] row) {
-        for (int column = 0; column < BOARD_SIZE; column++) {
-            if (row[column] == EMPTY_BOARD_POSITION)
-                return true;
-        }
-        return false;
+        return !somePlayerWon() && currentRound == FINAL_ROUND;
     }
 
     private boolean somePlayerWon() {
@@ -177,6 +170,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         validateIsValidAction(action);
         applyActionOnBoard(action);
         selectNextPlayer();
+        currentRound++;
         return this;
     }
 
@@ -196,6 +190,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         validateIsValidUndoAction(action);
         applyUndoActionOnBoard(action);
         selectNextPlayer();
+        currentRound--;
         return this;
     }
 
