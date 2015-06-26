@@ -21,9 +21,15 @@ Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 ```
 
 ##### Important
-- Because of comparison state's method getAvailableActionsForCurrentAgent() must always either return the same instances of objects or return objects that override equals() and hashCode() methods.
-- Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
+For algorithm to work correct it is necessary that state's method getAvailableActionsForCurrentAgent() either returns the same instances of objects or return objects that override equals() and hashCode() methods.
 
+Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
+You could optionally set which classes should be ignored during state cloning.
+```java
+mcts.dontClone(DontCloneMe0.class, DontCloneMe1.class);
+```
+
+##### Examples
 Tic-Tac-Toe example can be found in the test directory and Scotland Yard board game example can be found [here](https://github.com/nejc92/scotland-yard).
 
 ## License
