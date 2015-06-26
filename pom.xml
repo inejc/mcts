@@ -6,7 +6,7 @@
 
     <groupId>io.github.nejc92</groupId>
     <artifactId>mcts</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>Monte Carlo Tree Search methods</name>
     <url>https://github.com/nejc92/mcts</url>
@@ -25,4 +25,22 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/examples/StaticState*</exclude>
+                        <exclude>**/examples/TicTacToePlayer*</exclude>
+                        <exclude>**/examples/TicTacToeState*</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
