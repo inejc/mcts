@@ -19,11 +19,12 @@ Mcts<State, Action, Player> mcts = new Mcts<>(numberOfIterations);
 
 Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 ```
-Tic-Tac-Toe example can be found in the test directory and Scotland Yard board game example can be found [here](https://github.com/nejc92/scotland-yard).
 
 ##### Important
 - Because of comparison state's method getAvailableActionsForCurrentAgent() must always either return the same instances of objects or return objects that override equals() and hashCode() methods.
 - Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
+
+Tic-Tac-Toe example can be found in the test directory and Scotland Yard board game example can be found [here](https://github.com/nejc92/scotland-yard).
 
 ## License
 This project is licensed under the terms of the MIT license. See LICENSE.md.
