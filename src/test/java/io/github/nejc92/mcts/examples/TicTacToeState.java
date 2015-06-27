@@ -57,7 +57,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
             case CROSS:
                 return 1;
             default:
-                throw new IllegalArgumentException("Invalid player type passed as function parameter");
+                throw new IllegalArgumentException("Error: invalid player type passed as function parameter");
         }
     }
 
@@ -185,7 +185,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
 
     private void validateIsValidAction(String action) {
         if (!getAvailableActionsForCurrentAgent().contains(action)) {
-            throw new IllegalArgumentException("Invalid action passed as function parameter");
+            throw new IllegalArgumentException("Error: invalid action passed as function parameter");
         }
     }
 
@@ -207,7 +207,7 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         int row = getRowFromAction(action);
         int column = getColumnFromAction(action);
         if (!(-1 < row && row < 3) && !(-1 < column && column < 3))
-            throw new IllegalArgumentException("Invalid action passed as function parameter");
+            throw new IllegalArgumentException("Error: invalid action passed as function parameter");
     }
 
     private void applyUndoActionOnBoard(String action) {

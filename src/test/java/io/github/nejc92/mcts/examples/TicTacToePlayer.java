@@ -20,7 +20,7 @@ public class TicTacToePlayer implements MctsDomainAgent<TicTacToeState> {
             case CROSS:
                 return new TicTacToePlayer('X');
             default:
-                throw new IllegalArgumentException("Invalid player type passed as function parameter");
+                throw new IllegalArgumentException("Error: invalid player type passed as function parameter");
         }
     }
 

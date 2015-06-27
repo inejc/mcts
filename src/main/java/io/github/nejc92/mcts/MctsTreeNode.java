@@ -57,7 +57,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     protected MctsTreeNode<StateT, ActionT, AgentT> addNewChildFromAction(ActionT action) {
         if (!isUntriedAction(action))
-            throw new IllegalArgumentException("Invalid action passed as function parameter");
+            throw new IllegalArgumentException("Error: invalid action passed as function parameter");
         else
             return addNewChildFromUntriedAction(action);
     }
@@ -117,9 +117,9 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     private void validateBestChildComputable() {
         if (!isFullyExpanded())
-            throw new UnsupportedOperationException("Operation not supported if node not fully expanded");
+            throw new UnsupportedOperationException("Error: operation not supported if node not fully expanded");
         else if (hasUnvisitedChild())
-            throw new UnsupportedOperationException("Operation not supported if node contains an unvisited child");
+            throw new UnsupportedOperationException("Error: operation not supported if node contains an unvisited child");
     }
 
     protected boolean isFullyExpanded() {
