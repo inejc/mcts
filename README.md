@@ -13,17 +13,17 @@ Create the implementation of MctsDomainState.
 ```java
 public class State implements MctsDomainState<Action, Player> {...}
 ```
-Create an instance of Mcts object and invoke uctSearch() to get the most promising action.
+Initialize the search and invoke uctSearch() to get the most promising action.
 ```java
 Mcts<State, Action, Player> mcts = Mcts.initialize(NUMBER_OF_ITERATIONS);
 Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 ```
 
 ##### Important
-For algorithm to work correct it is necessary that state's method getAvailableActionsForCurrentAgent() either returns the same instances of objects or return objects that override equals() and hashCode() methods.
+For algorithm to work correctly it is necessary that state's method getAvailableActionsForCurrentAgent() either returns the same instances of objects or return objects that override equals() and hashCode() methods.
 
 Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
-You could optionally set which classes should be ignored during state cloning.
+You can optionally set which classes should be ignored during state cloning.
 ```java
 mcts.dontClone(DontCloneMe0.class, DontCloneMe1.class);
 ```
