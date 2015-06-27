@@ -19,7 +19,7 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     private List<MctsTreeNode<StateT, ActionT, AgentT>> childNodes;
     private final Cloner cloner;
 
-    public MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
+    protected MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
         this(null, null, representedState, explorationParameter, cloner);
     }
 
