@@ -1,18 +1,28 @@
 package io.github.nejc92.mcts;
 
+import com.rits.cloning.Cloner;
+
 import java.util.Collections;
 import java.util.List;
 
 public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>> {
 
     private final int numberOfIterations;
+    private final Cloner cloner;
 
-    public Mcts(int numberOfIterations) {
+    public static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>>
+        Mcts<StateT, ActionT, AgentT> initialize(int numberOfIterations) {
+            Cloner cloner = new Cloner();
+            return new Mcts<>(numberOfIterations, cloner);
+    }
+
+    private Mcts(int numberOfIterations, Cloner cloner) {
         this.numberOfIterations = numberOfIterations;
+        this.cloner = cloner;
     }
 
     public ActionT uctSearch(StateT state, double explorationParameter) {
-        MctsTreeNode<StateT, ActionT, AgentT> rootNode = MctsTreeNode.createRootNode(state, explorationParameter);
+        MctsTreeNode<StateT, ActionT, AgentT> rootNode = new MctsTreeNode<>(state, explorationParameter, cloner);
         for (int i = 0; i < numberOfIterations; i++) {
             performOneMctsIteration(rootNode, state.getCurrentAgent());
         }
@@ -61,8 +71,12 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     }
 
     private double calculateStatesRewardForNode(StateT terminalState, MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
-        // todo: don't violate law of Demeter
+        // todo: don't violate the law of Demeter
         AgentT representedStatesPreviousAgent = treeNode.getRepresentedStatesPreviousAgent();
         return representedStatesPreviousAgent.getRewardFromTerminalState(terminalState);
+    }
+
+    public void dontClone(final Class<?>... classes) {
+        cloner.dontClone(classes);
     }
 }

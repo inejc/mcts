@@ -15,8 +15,7 @@ public class State implements MctsDomainState<Action, Player> {...}
 ```
 Create an instance of Mcts object and invoke uctSearch() to get the most promising action.
 ```java
-Mcts<State, Action, Player> mcts = new Mcts<>(numberOfIterations);
-
+Mcts<State, Action, Player> mcts = Mcts.initialize(NUMBER_OF_ITERATIONS);
 Action mostPromisingAction = mcts.uctSearch(state, explorationParameter);
 ```
 

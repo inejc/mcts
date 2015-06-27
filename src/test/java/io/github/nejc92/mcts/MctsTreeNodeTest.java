@@ -1,5 +1,6 @@
 package io.github.nejc92.mcts;
 
+import com.rits.cloning.Cloner;
 import io.github.nejc92.mcts.examples.StaticState;
 import io.github.nejc92.mcts.examples.TicTacToePlayer;
 import org.junit.Before;
@@ -19,13 +20,14 @@ public class MctsTreeNodeTest {
     private List<String> availableActions;
     private MctsTreeNode<StaticState, String, TicTacToePlayer> rootNode;
     private StaticState state;
+    private final Cloner cloner = new Cloner();
 
     @Before
     public void setUp() {
         allPossibleActions = new ArrayList<>(Arrays.asList("0", "1", "2"));
         availableActions = allPossibleActions.subList(0, 2);
         state = new StaticState(availableActions);
-        rootNode = MctsTreeNode.createRootNode(state, EXPLORATION_PARAMETER);
+        rootNode = new MctsTreeNode<>(state, EXPLORATION_PARAMETER, cloner);
     }
 
     @Test
