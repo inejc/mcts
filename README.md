@@ -20,12 +20,12 @@ Action mostPromisingAction = mcts.uctSearchWithExploration(state, explorationPar
 ```
 
 ##### Important
-For algorithm to work correctly it is necessary that state's method getAvailableActionsForCurrentAgent() either returns the same instances of objects or return objects that override equals() and hashCode() methods.
+For algorithm to work correctly it is necessary that state's method getAvailableActionsForCurrentAgent() either returns the same instances of objects or returns objects that override equals() and hashCode() methods.
 
 Before every tree expansion and simulation a deep clone of represented state is created. This can lead to performance issues and should be taken into account when implementing MctsDomainState.
 You can optionally set which classes should be ignored during state cloning.
 ```java
-mcts.dontClone(DontCloneMe0.class, DontCloneMe1.class);
+mcts.dontClone(DontCloneMe0.class, DontCloneMe1.class, ...);
 ```
 
 ##### Examples
