@@ -24,12 +24,12 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     public ActionT uctSearch(StateT state, double explorationParameter) {
         MctsTreeNode<StateT, ActionT, AgentT> rootNode = new MctsTreeNode<>(state, explorationParameter, cloner);
         for (int i = 0; i < numberOfIterations; i++) {
-            performOneMctsIteration(rootNode, state.getCurrentAgent());
+            performMctsIteration(rootNode, state.getCurrentAgent());
         }
         return rootNode.getMostPromisingAction();
     }
 
-    private void performOneMctsIteration(MctsTreeNode<StateT, ActionT, AgentT> rootNode, AgentT agentInvoking) {
+    private void performMctsIteration(MctsTreeNode<StateT, ActionT, AgentT> rootNode, AgentT agentInvoking) {
         MctsTreeNode<StateT, ActionT, AgentT> selectedChildNode = treePolicy(rootNode);
         StateT terminalState = getTerminalStateFromDefaultPolicy(selectedChildNode, agentInvoking);
         backPropagate(selectedChildNode, terminalState);
@@ -72,8 +72,8 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
 
     private double calculateStatesRewardForNode(StateT terminalState, MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
         // todo: don't violate the law of Demeter
-        AgentT representedStatesPreviousAgent = treeNode.getRepresentedStatesPreviousAgent();
-        return representedStatesPreviousAgent.getRewardFromTerminalState(terminalState);
+        AgentT parentsStatesAgent = treeNode.getRepresentedStatesPreviousAgent();
+        return parentsStatesAgent.getRewardFromTerminalState(terminalState);
     }
 
     public void dontClone(final Class<?>... classes) {
