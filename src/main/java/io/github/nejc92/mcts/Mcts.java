@@ -38,24 +38,24 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         backPropagate(selectedChildNode, terminalState);
     }
 
-    private MctsTreeNode<StateT, ActionT, AgentT> treePolicy(MctsTreeNode<StateT, ActionT, AgentT> treeNode,
+    private MctsTreeNode<StateT, ActionT, AgentT> treePolicy(MctsTreeNode<StateT, ActionT, AgentT> node,
                                                              double explorationParameter) {
-        while (!treeNode.representsTerminalState()) {
-            if (!treeNode.isFullyExpanded())
-                return expand(treeNode);
+        while (!node.representsTerminalState()) {
+            if (!node.isFullyExpanded())
+                return expand(node);
             else
-                treeNode = getNodesBestChild(treeNode, explorationParameter);
+                node = getNodesBestChild(node, explorationParameter);
         }
-        return treeNode;
+        return node;
     }
 
-    private MctsTreeNode<StateT, ActionT, AgentT> expand(MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
-        ActionT randomUntriedAction = getRandomActionFromNodesUntriedActions(treeNode);
-        return treeNode.addNewChildFromAction(randomUntriedAction);
+    private MctsTreeNode<StateT, ActionT, AgentT> expand(MctsTreeNode<StateT, ActionT, AgentT> node) {
+        ActionT randomUntriedAction = getRandomActionFromNodesUntriedActions(node);
+        return node.addNewChildFromAction(randomUntriedAction);
     }
 
-    private ActionT getRandomActionFromNodesUntriedActions(MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
-        List<ActionT> untriedActions = treeNode.getUntriedActionsForCurrentAgent();
+    private ActionT getRandomActionFromNodesUntriedActions(MctsTreeNode<StateT, ActionT, AgentT> node) {
+        List<ActionT> untriedActions = node.getUntriedActionsForCurrentAgent();
         Collections.shuffle(untriedActions);
         return untriedActions.get(0);
     }
@@ -96,22 +96,22 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     }
 
     private StateT getTerminalStateFromDefaultPolicy(
-            MctsTreeNode<StateT, ActionT, AgentT> treeNode, AgentT agentInvoking) {
-        StateT treeNodesStateClone = treeNode.getDeepCloneOfRepresentedState();
-        return agentInvoking.getTerminalStateByPerformingSimulationFromState(treeNodesStateClone);
+            MctsTreeNode<StateT, ActionT, AgentT> node, AgentT agentInvoking) {
+        StateT nodesStateClone = node.getDeepCloneOfRepresentedState();
+        return agentInvoking.getTerminalStateByPerformingSimulationFromState(nodesStateClone);
     }
 
-    private void backPropagate(MctsTreeNode<StateT, ActionT, AgentT> treeNode, StateT terminalState) {
-        while (treeNode != null) {
-            double reward = calculateStatesRewardForNode(terminalState, treeNode);
-            treeNode.updateDomainTheoreticValue(reward);
-            treeNode = treeNode.getParentNode();
+    private void backPropagate(MctsTreeNode<StateT, ActionT, AgentT> node, StateT terminalState) {
+        while (node != null) {
+            double reward = calculateStatesRewardForNode(terminalState, node);
+            node.updateDomainTheoreticValue(reward);
+            node = node.getParentNode();
         }
     }
 
-    private double calculateStatesRewardForNode(StateT terminalState, MctsTreeNode<StateT, ActionT, AgentT> treeNode) {
+    private double calculateStatesRewardForNode(StateT terminalState, MctsTreeNode<StateT, ActionT, AgentT> node) {
         // todo: don't violate the law of Demeter
-        AgentT parentsStatesCurrentAgent = treeNode.getRepresentedStatesPreviousAgent();
+        AgentT parentsStatesCurrentAgent = node.getRepresentedStatesPreviousAgent();
         return parentsStatesCurrentAgent.getRewardFromTerminalState(terminalState);
     }
 
