@@ -60,13 +60,6 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         return untriedActions.get(0);
     }
 
-    private ActionT getNodesMostPromisingAction(MctsTreeNode<StateT, ActionT, AgentT> node) {
-        validateBestChildComputable(node);
-        MctsTreeNode<StateT, ActionT, AgentT> bestChildWithoutExploration =
-                getNodesBestChildConfidentlyWithExploration(node, NO_EXPLORATION);
-        return bestChildWithoutExploration.getIncomingAction();
-    }
-
     private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChild(MctsTreeNode<StateT, ActionT, AgentT> node,
                                                                     double explorationParameter) {
         validateBestChildComputable(node);
@@ -79,6 +72,13 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         else if (node.hasUnvisitedChild())
             throw new UnsupportedOperationException(
                     "Error: operation not supported if node contains an unvisited child");
+    }
+
+    private ActionT getNodesMostPromisingAction(MctsTreeNode<StateT, ActionT, AgentT> node) {
+        validateBestChildComputable(node);
+        MctsTreeNode<StateT, ActionT, AgentT> bestChildWithoutExploration =
+                getNodesBestChildConfidentlyWithExploration(node, NO_EXPLORATION);
+        return bestChildWithoutExploration.getIncomingAction();
     }
 
     private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChildConfidentlyWithExploration(
