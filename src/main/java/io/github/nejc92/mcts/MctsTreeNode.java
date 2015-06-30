@@ -8,29 +8,25 @@ import java.util.stream.Collectors;
 
 public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent> {
 
-    private static final double NO_EXPLORATION = 0;
-
     private final MctsTreeNode<StateT, ActionT, AgentT> parentNode;
     private final ActionT incomingAction;
     private final StateT representedState;
     private int visitCount;
     private double totalReward;
-    private final double explorationParameter;
     private List<MctsTreeNode<StateT, ActionT, AgentT>> childNodes;
     private final Cloner cloner;
 
-    protected MctsTreeNode(StateT representedState, double explorationParameter, Cloner cloner) {
-        this(null, null, representedState, explorationParameter, cloner);
+    protected MctsTreeNode(StateT representedState, Cloner cloner) {
+        this(null, null, representedState, cloner);
     }
 
     private MctsTreeNode(MctsTreeNode<StateT, ActionT, AgentT> parentNode, ActionT incomingAction,
-                         StateT representedState, double explorationParameter, Cloner cloner) {
+                         StateT representedState, Cloner cloner) {
         this.parentNode = parentNode;
         this.incomingAction = incomingAction;
         this.representedState = representedState;
         this.visitCount = 0;
         this.totalReward = 0.0;
-        this.explorationParameter = explorationParameter;
         this.childNodes = new ArrayList<>();
         this.cloner = cloner;
     }
@@ -39,12 +35,20 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return parentNode;
     }
 
-    private ActionT getIncomingAction() {
+    protected ActionT getIncomingAction() {
         return incomingAction;
     }
 
-    private int getVisitCount() {
+    protected int getVisitCount() {
         return visitCount;
+    }
+
+    protected int getParentsVisitCount() {
+        return parentNode.getVisitCount();
+    }
+
+    protected List<MctsTreeNode<StateT, ActionT, AgentT>> getChildNodes() {
+        return childNodes;
     }
 
     protected boolean representsTerminalState() {
@@ -53,6 +57,19 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     protected AgentT getRepresentedStatesPreviousAgent() {
         return representedState.getPreviousAgent();
+    }
+
+    protected boolean isFullyExpanded() {
+        return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
+    }
+
+    protected boolean hasUnvisitedChild () {
+        return childNodes.stream()
+                .anyMatch(MctsTreeNode::isUnvisited);
+    }
+
+    private boolean isUnvisited() {
+        return visitCount == 0;
     }
 
     protected MctsTreeNode<StateT, ActionT, AgentT> addNewChildFromAction(ActionT action) {
@@ -98,57 +115,17 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
     private MctsTreeNode<StateT, ActionT, AgentT> appendNewChildInstance(
             StateT representedState, ActionT incomingAction) {
         MctsTreeNode<StateT, ActionT, AgentT> childNode = new MctsTreeNode<>(
-                this, incomingAction, representedState, explorationParameter, cloner);
+                this, incomingAction, representedState, cloner);
         childNodes.add(childNode);
         return childNode;
-    }
-
-    protected ActionT getMostPromisingAction() {
-        validateBestChildComputable();
-        MctsTreeNode<StateT, ActionT, AgentT> bestChildWithoutExploration =
-                getBestChildConfidentlyWithExploration(NO_EXPLORATION);
-        return bestChildWithoutExploration.getIncomingAction();
-    }
-
-    protected MctsTreeNode<StateT, ActionT, AgentT> getBestChild() {
-        validateBestChildComputable();
-        return getBestChildConfidentlyWithExploration(explorationParameter);
-    }
-
-    private void validateBestChildComputable() {
-        if (!isFullyExpanded())
-            throw new UnsupportedOperationException("Error: operation not supported if node not fully expanded");
-        else if (hasUnvisitedChild())
-            throw new UnsupportedOperationException("Error: operation not supported if node contains an unvisited child");
-    }
-
-    protected boolean isFullyExpanded() {
-        return representedState.getNumberOfAvailableActionsForCurrentAgent() == childNodes.size();
-    }
-
-    private boolean hasUnvisitedChild () {
-        return childNodes.stream()
-                .anyMatch(MctsTreeNode::isUnvisited);
-    }
-
-    private boolean isUnvisited() {
-        return visitCount == 0;
-    }
-
-    private MctsTreeNode<StateT, ActionT, AgentT> getBestChildConfidentlyWithExploration(double explorationParameter) {
-        return childNodes.stream()
-                .max((node1, node2) -> Double.compare(
-                        node1.calculateUctValue(explorationParameter),
-                        node2.calculateUctValue(explorationParameter))).get();
-    }
-
-    private double calculateUctValue(double explorationParameter) {
-        return totalReward / visitCount
-               + explorationParameter * (Math.sqrt((2 * Math.log(getParentNode().getVisitCount())) / visitCount));
     }
 
     protected void updateDomainTheoreticValue(double rewardAddend) {
         visitCount += 1;
         totalReward += rewardAddend;
+    }
+
+    protected double getDomainTheoreticValue() {
+        return totalReward / visitCount;
     }
 }
