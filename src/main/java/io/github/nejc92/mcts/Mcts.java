@@ -10,6 +10,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     private static final double NO_EXPLORATION = 0;
 
     private final int numberOfIterations;
+    private double explorationParameter;
     private final Cloner cloner;
 
     public static<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, AgentT extends MctsDomainAgent<StateT>>
@@ -24,27 +25,30 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     }
 
     public ActionT uctSearchWithExploration(StateT state, double explorationParameter) {
+        setExplorationForSearch(explorationParameter);
         MctsTreeNode<StateT, ActionT, AgentT> rootNode = new MctsTreeNode<>(state, cloner);
         for (int i = 0; i < numberOfIterations; i++) {
-            performMctsIteration(rootNode, state.getCurrentAgent(), explorationParameter);
+            performMctsIteration(rootNode, state.getCurrentAgent());
         }
         return getNodesMostPromisingAction(rootNode);
     }
 
-    private void performMctsIteration(MctsTreeNode<StateT, ActionT, AgentT> rootNode, AgentT agentInvoking,
-                                      double explorationParameter) {
-        MctsTreeNode<StateT, ActionT, AgentT> selectedChildNode = treePolicy(rootNode, explorationParameter);
+    private void setExplorationForSearch(double explorationParameter) {
+        this.explorationParameter = explorationParameter;
+    }
+
+    private void performMctsIteration(MctsTreeNode<StateT, ActionT, AgentT> rootNode, AgentT agentInvoking) {
+        MctsTreeNode<StateT, ActionT, AgentT> selectedChildNode = treePolicy(rootNode);
         StateT terminalState = getTerminalStateFromDefaultPolicy(selectedChildNode, agentInvoking);
         backPropagate(selectedChildNode, terminalState);
     }
 
-    private MctsTreeNode<StateT, ActionT, AgentT> treePolicy(MctsTreeNode<StateT, ActionT, AgentT> node,
-                                                             double explorationParameter) {
+    private MctsTreeNode<StateT, ActionT, AgentT> treePolicy(MctsTreeNode<StateT, ActionT, AgentT> node) {
         while (!node.representsTerminalState()) {
             if (!node.isFullyExpanded())
                 return expand(node);
             else
-                node = getNodesBestChild(node, explorationParameter);
+                node = getNodesBestChild(node);
         }
         return node;
     }
@@ -60,8 +64,7 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
         return untriedActions.get(0);
     }
 
-    private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChild(MctsTreeNode<StateT, ActionT, AgentT> node,
-                                                                    double explorationParameter) {
+    private MctsTreeNode<StateT, ActionT, AgentT> getNodesBestChild(MctsTreeNode<StateT, ActionT, AgentT> node) {
         validateBestChildComputable(node);
         return getNodesBestChildConfidentlyWithExploration(node, explorationParameter);
     }
