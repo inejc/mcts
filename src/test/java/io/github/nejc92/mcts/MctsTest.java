@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 public class MctsTest {
 
-    private static final int NUMBER_OF_ITERATIONS = 600;
+    private static final int NUMBER_OF_ITERATIONS = 700;
     private static final int NUMBER_OF_GAMES = 100;
     private static final double EXPLORATION_PARAMETER = 0.4;
 
