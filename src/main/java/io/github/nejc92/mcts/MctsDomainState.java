@@ -10,4 +10,5 @@ public interface MctsDomainState<ActionT, AgentT extends MctsDomainAgent> {
     int getNumberOfAvailableActionsForCurrentAgent();
     List<ActionT> getAvailableActionsForCurrentAgent();
     MctsDomainState performActionForCurrentAgent(ActionT action);
+    MctsDomainState skipCurrentAgent();
 }

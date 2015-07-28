@@ -51,12 +51,20 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
         return childNodes;
     }
 
+    protected boolean hasChildNodes() {
+        return childNodes.size() > 0;
+    }
+
     protected boolean representsTerminalState() {
         return representedState.isTerminal();
     }
 
     protected AgentT getRepresentedStatesPreviousAgent() {
         return representedState.getPreviousAgent();
+    }
+
+    protected boolean representedStatesCurrentAgentHasAvailableActions() {
+        return representedState.getNumberOfAvailableActionsForCurrentAgent() > 0;
     }
 
     protected boolean isFullyExpanded() {
@@ -70,6 +78,12 @@ public class MctsTreeNode<StateT extends MctsDomainState<ActionT, AgentT>, Actio
 
     private boolean isUnvisited() {
         return visitCount == 0;
+    }
+
+    protected MctsTreeNode<StateT, ActionT, AgentT> addNewChildWithoutAction() {
+        StateT childNodeState = getDeepCloneOfRepresentedState();
+        childNodeState.skipCurrentAgent();
+        return appendNewChildInstance(childNodeState, null);
     }
 
     protected MctsTreeNode<StateT, ActionT, AgentT> addNewChildFromAction(ActionT action) {

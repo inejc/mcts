@@ -45,12 +45,19 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
 
     private MctsTreeNode<StateT, ActionT, AgentT> treePolicy(MctsTreeNode<StateT, ActionT, AgentT> node) {
         while (!node.representsTerminalState()) {
-            if (!node.isFullyExpanded())
+            if (!node.representedStatesCurrentAgentHasAvailableActions())
+                return expandWithoutAction(node);
+            else if (!node.isFullyExpanded())
                 return expand(node);
             else
                 node = getNodesBestChild(node);
         }
         return node;
+    }
+
+
+    private MctsTreeNode<StateT, ActionT, AgentT> expandWithoutAction(MctsTreeNode<StateT, ActionT, AgentT> node) {
+        return node.addNewChildWithoutAction();
     }
 
     private MctsTreeNode<StateT, ActionT, AgentT> expand(MctsTreeNode<StateT, ActionT, AgentT> node) {
@@ -70,7 +77,9 @@ public class Mcts<StateT extends MctsDomainState<ActionT, AgentT>, ActionT, Agen
     }
 
     private void validateBestChildComputable(MctsTreeNode<StateT, ActionT, AgentT> node) {
-        if (!node.isFullyExpanded())
+        if (!node.hasChildNodes())
+            throw new UnsupportedOperationException("Error: operation not supported if child nodes empty");
+        else if (!node.isFullyExpanded())
             throw new UnsupportedOperationException("Error: operation not supported if node not fully expanded");
         else if (node.hasUnvisitedChild())
             throw new UnsupportedOperationException(

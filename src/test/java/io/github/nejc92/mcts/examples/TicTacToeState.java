@@ -230,4 +230,9 @@ public class TicTacToeState implements MctsDomainState<String, TicTacToePlayer> 
         currentPlayerIndex = 2 - currentPlayerIndex - 1;
         previousPlayerIndex = 2 - previousPlayerIndex - 1;
     }
+
+    @Override
+    public MctsDomainState skipCurrentAgent() {
+        return this;
+    }
 }

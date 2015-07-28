@@ -41,4 +41,9 @@ public class StaticState implements MctsDomainState<String, TicTacToePlayer> {
     public MctsDomainState performActionForCurrentAgent(String action) {
         return this;
     }
+
+    @Override
+    public MctsDomainState skipCurrentAgent() {
+        return this;
+    }
 }
