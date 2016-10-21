@@ -1,7 +1,7 @@
 [![Code Review](http://www.zomis.net/codereview/shield/?qid=105009)](http://codereview.stackexchange.com/q/105009/75814)
 
 # Monte Carlo Tree Search methods
-This is a Java implementation of Monte Carlo Tree Search methods. It is self-contained, domain-independent and can thus be easily used in any state-action domain. The project was developed for the purpose of my Bachelor’s thesis.
+This is a Java implementation of Monte Carlo Tree Search methods. It is self-contained, domain-independent and can thus easily be used in any state-action domain. The project was developed for the purpose of my Bachelor’s thesis.
 
 ## Dependencies
 JUnit4, Java cloning library
